@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Intrare · Francize Panda Tur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="wrap narrow" style="max-width:420px;padding-block:12vh 40px">
+  <form class="panel" id="loginForm">
+    <div class="brand">
+      <small>Departamentul francize · Panda Tur Moldova</small>
+      <h1>Intrare în pipeline</h1>
+    </div>
+    <label>Parola echipei<input id="pw" type="password" autocomplete="current-password" required autofocus></label>
+    <div class="err" id="err" hidden></div>
+    <button class="btn primary" type="submit" id="btn">Intră</button>
+  </form>
+</div>
+<script>
+fetch('/api/login').then(r=>r.json()).then(d=>{if(d.authed)location.href='/'}).catch(()=>{});
+document.getElementById('loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const err=document.getElementById('err'), btn=document.getElementById('btn');
+  err.hidden=true; btn.disabled=true;
+  try{
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok) location.href='/';
+    else {err.textContent=d.error||'Nu s-a putut intra';err.hidden=false}
+  }catch{err.textContent='Fără conexiune. Încearcă din nou.';err.hidden=false}
+  finally{btn.disabled=false}
+});
+</script>
+</body>
+</html>

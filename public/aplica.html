@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Deschide o agenție Panda Tur</title>
+<meta name="description" content="Aplică pentru o franciză Panda Tur în Moldova. Completează formularul în 2 minute și te contactăm.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="wrap narrow">
+  <header>
+    <div class="brand">
+      <small>Franciză · Panda Tur Moldova</small>
+      <h1>Deschide propria agenție de turism Panda Tur</h1>
+    </div>
+  </header>
+  <p class="lead-in">Completează formularul în aproximativ 2 minute. Echipa departamentului de francize analizează fiecare cerere și te sună pentru o discuție.</p>
+  <div class="facts">
+    <div class="fact"><b>10.000 – 25.000 €</b>investiția de pornire</div>
+    <div class="fact"><b>Toată Moldova</b>orașe și raioane</div>
+    <div class="fact"><b>2 minute</b>durata formularului</div>
+  </div>
+
+  <form class="panel" id="applyForm" novalidate>
+    <div class="grid2">
+      <label>Nume și prenume *<input id="name" autocomplete="name" required maxlength="120"></label>
+      <label>Telefon *<input id="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+373 …"></label>
+      <label>Email<input id="email" type="email" autocomplete="email" maxlength="120"></label>
+      <label>Orașul / localitatea agenției *<input id="city" required maxlength="80" placeholder="ex. Bălți"></label>
+    </div>
+
+    <fieldset class="choices">
+      <legend>Ce buget aveți disponibil pentru investiție? *</legend>
+      <label class="choice"><input type="radio" name="budget" value="lt10"> Sub 10.000 €</label>
+      <label class="choice"><input type="radio" name="budget" value="mid"> 10.000 – 25.000 €</label>
+      <label class="choice"><input type="radio" name="budget" value="gt25"> Peste 25.000 €</label>
+    </fieldset>
+
+    <fieldset class="choices">
+      <legend>Aveți un spațiu pentru oficiu? *</legend>
+      <label class="choice"><input type="radio" name="space" value="own"> Da, propriu sau închiriat</label>
+      <label class="choice"><input type="radio" name="space" value="searching"> Caut spațiu</label>
+      <label class="choice"><input type="radio" name="space" value="none"> Nu</label>
+    </fieldset>
+
+    <fieldset class="choices">
+      <legend>Când doriți să deschideți agenția? *</legend>
+      <label class="choice"><input type="radio" name="timeline" value="m1"> În maxim 1 lună</label>
+      <label class="choice"><input type="radio" name="timeline" value="m3"> În 1–3 luni</label>
+      <label class="choice"><input type="radio" name="timeline" value="m6"> În 3–6 luni</label>
+      <label class="choice"><input type="radio" name="timeline" value="later"> Peste 6 luni</label>
+    </fieldset>
+
+    <label>Experiență
+      <select id="experience">
+        <option value="">Alege (opțional)</option>
+        <option value="turism">Am lucrat în turism</option>
+        <option value="vanzari">Am lucrat în vânzări / servicii</option>
+        <option value="business">Am un business propriu</option>
+        <option value="none">Nu am experiență în domeniu</option>
+      </select>
+    </label>
+    <label>Mesaj (opțional)<textarea id="message" maxlength="2000" placeholder="Ce v-a atras la franciza Panda Tur?"></textarea></label>
+
+    <div class="hp" aria-hidden="true"><label>Website<input id="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <label class="consent"><input type="checkbox" id="consent"> Sunt de acord ca Panda Tur să prelucreze datele mele pentru a mă contacta în legătură cu franciza.</label>
+
+    <div class="err" id="err" hidden></div>
+    <button class="btn primary" type="submit" id="btn" style="padding:12px 18px;font-size:15px">Trimite cererea</button>
+  </form>
+
+  <div class="panel success" id="done" hidden>
+    <h2>Mulțumim, cererea a fost trimisă</h2>
+    <p class="lead-in" style="margin:0 auto">Un coleg din departamentul de francize Panda Tur te va contacta în zilele următoare.</p>
+  </div>
+</div>
+<script>
+const startedAt=Date.now();
+const src=new URLSearchParams(location.search).get('src');
+const $=id=>document.getElementById(id);
+const radio=n=>(document.querySelector(`input[name="${n}"]:checked`)||{}).value||'';
+$('applyForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const body={name:$('name').value.trim(),phone:$('phone').value.trim(),email:$('email').value.trim(),city:$('city').value.trim(),
+    budget:radio('budget'),space:radio('space'),timeline:radio('timeline'),experience:$('experience').value,message:$('message').value.trim(),
+    consent:$('consent').checked,website:$('website').value,startedAt,source:['facebook','instagram'].includes(src)?src:'site'};
+  const miss=[];
+  if(!body.name)miss.push('nume'); if(!body.phone)miss.push('telefon'); if(!body.city)miss.push('oraș');
+  if(!body.budget)miss.push('buget'); if(!body.space)miss.push('spațiu'); if(!body.timeline)miss.push('termen');
+  const err=$('err');
+  if(miss.length){err.textContent='Completează: '+miss.join(', ')+'.';err.hidden=false;return}
+  if(!body.consent){err.textContent='Bifează acordul pentru prelucrarea datelor.';err.hidden=false;return}
+  err.hidden=true; $('btn').disabled=true; $('btn').textContent='Se trimite…';
+  try{
+    const r=await fetch('/api/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.error||'Nu s-a putut trimite');
+    $('applyForm').hidden=true; $('done').hidden=false; window.scrollTo({top:0});
+  }catch(x){err.textContent=x.message+'. Încearcă din nou.';err.hidden=false}
+  finally{$('btn').disabled=false;$('btn').textContent='Trimite cererea'}
+});
+</script>
+</body>
+</html>

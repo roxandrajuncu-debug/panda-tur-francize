@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Filtru Francize Panda Tur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <small>Departamentul francize · Panda Tur Moldova</small>
+      <h1>Filtru cereri de franciză</h1>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="btnLogout" type="button">Ieșire</button>
+      <button class="btn" id="btnCities" type="button">Priorități orașe</button>
+      <button class="btn primary" id="btnAdd" type="button">+ Cerere nouă</button>
+    </div>
+  </header>
+
+  <div id="notice" class="notice" hidden></div>
+
+  <section class="stats" id="stats" aria-label="Sumar"></section>
+
+  <div class="filters">
+    <input id="fq" type="search" placeholder="Caută după nume, telefon, oraș…" aria-label="Căutare">
+    <select id="fsrc" aria-label="Sursa"><option value="">Toate sursele</option></select>
+    <select id="fcat" aria-label="Categorie">
+      <option value="">Toate categoriile</option>
+      <option value="hot">Fierbinte (70+)</option>
+      <option value="warm">Cald (45–69)</option>
+      <option value="cold">Rece (sub 45)</option>
+      <option value="off">Sub prag buget</option>
+    </select>
+    <span class="legend">Trage cardurile între coloane sau deschide-le pentru a schimba etapa</span>
+  </div>
+
+  <div class="board-scroll"><div class="board" id="board"></div></div>
+
+  <details class="help">
+    <summary>Formularul pentru candidați · cum se calculează scorul</summary>
+    <div class="help-grid">
+      <div>
+        <h3>Linkuri de formular (sursa se marchează automat)</h3>
+        <div class="links" id="formLinks"></div>
+      </div>
+      <div>
+        <h3>Buget disponibil (max 40)</h3>
+        <table id="tBudget"></table>
+      </div>
+      <div>
+        <h3>Oraș / regiune (max 25)</h3>
+        <table id="tCity"></table>
+      </div>
+      <div>
+        <h3>Spațiu (max 20) și termen (max 15)</h3>
+        <table id="tSpace"></table>
+      </div>
+      <div>
+        <h3>Întrebările formularului (pentru Facebook Lead Ads)</h3>
+        <pre class="q" id="qText"></pre>
+        <button class="btn" id="btnCopyQ" type="button">Copiază întrebările</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<dialog id="dlgLead">
+  <form class="dlg" id="leadForm" novalidate>
+    <h2 id="dlgTitle">Cerere nouă</h2>
+    <div class="grid2">
+      <label>Nume și prenume *<input id="f_name" required maxlength="120"></label>
+      <label>Telefon *<input id="f_phone" required maxlength="40" inputmode="tel"></label>
+      <label>Email<input id="f_email" type="email" maxlength="120"></label>
+      <label>Sursa cererii<select id="f_source"></select></label>
+      <label>Oraș / localitate *<input id="f_city" list="cityList" required maxlength="80"></label>
+      <label>Buget disponibil *<select id="f_budget" required></select></label>
+      <label>Spațiu pentru oficiu *<select id="f_space" required></select></label>
+      <label>Când vrea să deschidă *<select id="f_time" required></select></label>
+      <label>Experiență (informativ)
+        <select id="f_exp">
+          <option value="">Nespecificat</option>
+          <option value="turism">Turism</option>
+          <option value="vanzari">Vânzări / servicii</option>
+          <option value="business">Are business propriu</option>
+          <option value="none">Fără experiență</option>
+        </select>
+      </label>
+      <label>Etapă<select id="f_stage"></select></label>
+      <label class="full">Notițe (apeluri, întâlniri, observații)<textarea id="f_notes" maxlength="4000"></textarea></label>
+    </div>
+    <div class="live-score" id="liveScore"></div>
+    <div class="err" id="formErr" hidden></div>
+    <div class="dlg-foot">
+      <div><button class="btn danger" id="btnDelete" type="button" hidden>Șterge</button></div>
+      <div>
+        <button class="btn" type="button" id="btnCancel">Anulează</button>
+        <button class="btn primary" type="submit" id="btnSave">Salvează</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgCities">
+  <form class="dlg" id="cityForm">
+    <h2>Priorități orașe</h2>
+    <p class="lead-in">Câte un oraș pe rând. Localitățile care nu sunt în nicio listă (inclusiv diaspora) primesc prioritate mică, 5 puncte.</p>
+    <div class="grid2">
+      <label>Prioritate mare (25 puncte)<textarea id="c_high" style="min-height:160px"></textarea></label>
+      <label>Prioritate medie (15 puncte)<textarea id="c_med" style="min-height:160px"></textarea></label>
+    </div>
+    <div class="dlg-foot">
+      <div></div>
+      <div>
+        <button class="btn" type="button" id="btnCityCancel">Anulează</button>
+        <button class="btn primary" type="submit">Salvează prioritățile</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<datalist id="cityList"></datalist>
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="/app.js"></script>
+</body>
+</html>
