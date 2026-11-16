@@ -1,7 +1,8 @@
-// /api/apply — formularul public completat de candidați. Cererea intră în coloana „Nou”.
+// /api/apply — formularul public completat de candidați. Cererea intră ca „nouă” și pleacă în Telegram.
 import { send, readBody, newId, handleError } from '../lib/http.js';
 import { cleanLead, SOURCES } from '../lib/lead.js';
 import { saveLead } from '../lib/store.js';
+import { notifyNewLead } from '../lib/telegram.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return send(res, 405, { error: 'Metodă nepermisă' }, { Allow: 'POST' });
@@ -15,16 +16,24 @@ export default async function handler(req, res) {
 
     if (!body.consent) return send(res, 400, { error: 'Este necesar acordul pentru prelucrarea datelor.' });
 
-    const { lead, missing } = cleanLead({
-      ...body,
-      source: SOURCES.includes(body.source) ? body.source : 'site',
-      stage: 'nou',
-      notes: body.message ? 'Mesaj candidat: ' + String(body.message).slice(0, 2000) : '',
-    });
+    const { lead, missing } = cleanLead(
+      {
+        ...body,
+        comment: body.comment ?? body.message,
+        source: SOURCES.includes(body.source) ? body.source : 'site',
+        stage: 'nou',
+        notes: '',
+      },
+      { requireComment: true },
+    );
     if (missing.length) return send(res, 400, { error: 'Completează: ' + missing.join(', ') });
 
     const now = new Date().toISOString();
-    await saveLead({ ...lead, id: newId(), createdAt: now, updatedAt: now });
+    const saved = await saveLead({ ...lead, id: newId(), createdAt: now, updatedAt: now });
+
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    await notifyNewLead(saved, host ? `https://${host}/` : '');
+
     send(res, 201, { ok: true });
   } catch (err) {
     handleError(res, err);

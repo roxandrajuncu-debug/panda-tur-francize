@@ -4,6 +4,13 @@ const SOURCES=[['site','Formular site'],['facebook','Facebook'],['instagram','In
 const BUDGET={lt10:{t:'Sub 10.000 €',p:0},mid:{t:'10.000 – 25.000 €',p:30},gt25:{t:'Peste 25.000 €',p:40}};
 const SPACE={own:{t:'Are spațiu (propriu/închiriat)',s:'Are spațiu',p:20},searching:{t:'Caută spațiu',s:'Caută spațiu',p:10},none:{t:'Nu are spațiu',s:'Fără spațiu',p:0}};
 const TIME={m1:{t:'În maxim 1 lună',s:'≤1 lună',p:15},m3:{t:'În 1–3 luni',s:'1–3 luni',p:10},m6:{t:'În 3–6 luni',s:'3–6 luni',p:5},later:{t:'Peste 6 luni / nu știe',s:'>6 luni',p:0}};
+const STATUS_OF={nou:'nouă',apel:'în lucru',intalnire:'în lucru',contract:'închisă',respins:'închisă'};
+const ST_CLASS={'nouă':'s-noua','în lucru':'s-lucru','închisă':'s-inchisa'};
+const ST_LABEL={'nouă':'Nouă','în lucru':'În lucru','închisă':'Închisă'};
+const statusOf=l=>STATUS_OF[l.stage||'nou']||'nouă';
+const stPill=st=>`<span class="st ${ST_CLASS[st]}">${ST_LABEL[st]}</span>`;
+let view='board';
+try{if(localStorage.getItem('pt_view')==='list')view='list'}catch{}
 const CITY_PTS={high:25,med:15,low:5};
 const CAT_LABEL={hot:'Fierbinte',warm:'Cald',cold:'Rece',off:'Sub prag'};
 
@@ -49,7 +56,7 @@ SOURCES.forEach(([v,t])=>$('fsrc').insertAdjacentHTML('beforeend',`<option value
 fillSelect($('f_budget'),[['','Alege…'],...Object.entries(BUDGET).map(([k,v])=>[k,v.t])]);
 fillSelect($('f_space'),[['','Alege…'],...Object.entries(SPACE).map(([k,v])=>[k,v.t])]);
 fillSelect($('f_time'),[['','Alege…'],...Object.entries(TIME).map(([k,v])=>[k,v.t])]);
-fillSelect($('f_stage'),STAGES.map(s=>[s.id,s.t]));
+$('f_stage').innerHTML=['nouă','în lucru','închisă'].map(st=>`<optgroup label="${ST_LABEL[st]}">${STAGES.filter(s=>STATUS_OF[s.id]===st).map(s=>`<option value="${s.id}">${ST_LABEL[st]} · ${s.t}</option>`).join('')}</optgroup>`).join('');
 const row=(a,b)=>`<tr><td>${esc(a)}</td><td>${b}</td></tr>`, note=t=>`<tr><td class="note" colspan="2">${esc(t)}</td></tr>`;
 $('tBudget').innerHTML=Object.values(BUDGET).map(v=>row(v.t,v.p)).join('')+note('Sub 10.000 € = marcat „Sub prag”, oricare ar fi scorul');
 $('tCity').innerHTML=row('Prioritate mare',25)+row('Prioritate medie',15)+row('Alte localități / diaspora',5)+note('Listele se schimbă din „Priorități orașe”');
@@ -81,14 +88,16 @@ function updateCityList(){
 // ---------- afișare ----------
 function withScore(){return leads.map(l=>({...l,_s:scoreOf(l)}))}
 function filtered(){
-  const q=norm($('fq').value), src=$('fsrc').value, cat=$('fcat').value;
+  const q=norm($('fq').value), src=$('fsrc').value, cat=$('fcat').value, st=$('fstatus').value;
   return withScore().filter(l=>{
+    if(st&&statusOf(l)!==st) return false;
     if(src&&l.source!==src) return false;
     if(cat&&l._s.cat!==cat) return false;
-    if(q&&![l.name,l.phone,l.email,l.city,l.notes].some(v=>norm(v).includes(q))) return false;
+    if(q&&![l.name,l.phone,l.email,l.city,l.notes,l.comment].some(v=>norm(v).includes(q))) return false;
     return true;
   });
 }
+function fmtDateTime(iso){try{return new Date(iso).toLocaleString('ro-RO',{timeZone:'Europe/Chisinau',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}catch{return ''}}
 function fmtDate(iso){try{return new Date(iso).toLocaleDateString('ro-RO',{day:'2-digit',month:'short'})}catch{return ''}}
 
 function render(){
@@ -100,6 +109,9 @@ function render(){
     <div class="stat warm"><b>${cnt('warm')}</b><span>calde, active</span></div>
     <div class="stat cold"><b>${cnt('cold')}</b><span>reci, active</span></div>
     <div class="stat"><b>${all.filter(l=>l.stage==='contract').length}</b><span>la contract</span></div>`;
+  $('boardWrap').hidden=view!=='board'; $('listWrap').hidden=view!=='list';
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.view===view));
+  if(view==='list') return renderList();
   const board=$('board');
   if(!leads.length){
     board.innerHTML=STAGES.map(s=>`<div class="col" data-stage="${s.id}"><h2>${s.t}<em>0</em></h2></div>`).join('')+
@@ -108,7 +120,7 @@ function render(){
   }
   const list=filtered();
   board.innerHTML=STAGES.map(s=>{
-    const items=list.filter(l=>(l.stage||'nou')===s.id).sort((a,b)=>b._s.total-a._s.total||(b.createdAt||'').localeCompare(a.createdAt||''));
+    const items=list.filter(l=>(l.stage||'nou')===s.id).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
     return `<div class="col" data-stage="${s.id}"><h2>${s.t}<em>${items.length}</em></h2>${items.length?items.map(cardHTML).join(''):'<div class="empty">Nimic aici</div>'}</div>`;
   }).join('');
   board.querySelectorAll('.card').forEach(c=>{
@@ -117,14 +129,34 @@ function render(){
   });
   bindDrops();
 }
+function renderList(){
+  const list=filtered().sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+  const wrap=$('listWrap');
+  if(!list.length){wrap.innerHTML=`<div class="list-empty">${loaded?(leads.length?'Nicio cerere pentru filtrele alese':'Nicio cerere încă'):'Se încarcă cererile…'}</div>`;return}
+  wrap.innerHTML=`<table class="ltable"><thead><tr><th>Primită</th><th>Nume</th><th>Telefon</th><th>Oraș</th><th>Comentariu</th><th>Status</th><th>Scor</th></tr></thead><tbody>${list.map(l=>`
+    <tr data-id="${esc(l.id)}" tabindex="0">
+      <td class="when">${fmtDateTime(l.createdAt)}</td>
+      <td class="nm">${esc(l.name)}</td>
+      <td>${esc(l.phone)}</td>
+      <td>${esc(l.city||'—')}</td>
+      <td><div class="cm">${esc(l.comment||'')}</div></td>
+      <td>${stPill(statusOf(l))} <small>${esc(STAGES.find(s=>s.id===(l.stage||'nou'))?.t||'')}</small></td>
+      <td><span class="pill ${l._s.cat}">${l._s.total}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+  wrap.querySelectorAll('tr[data-id]').forEach(r=>{
+    r.addEventListener('click',()=>openLead(r.dataset.id));
+    r.addEventListener('keydown',e=>{if(e.key==='Enter')openLead(r.dataset.id)});
+  });
+}
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;try{localStorage.setItem('pt_view',view)}catch{};render()}));
 function cardHTML(l){
   const s=l._s, src=(SOURCES.find(x=>x[0]===l.source)||[,''])[1];
   return `<button type="button" class="card ${s.cat}" draggable="true" data-id="${esc(l.id)}">
     <div class="top"><span class="name">${esc(l.name)}</span><span class="score">${s.total}<small>/100</small></span></div>
-    <div><span class="pill ${s.cat}">${CAT_LABEL[s.cat]}</span></div>
+    <div><span class="pill ${s.cat}">${CAT_LABEL[s.cat]}</span> ${stPill(statusOf(l))}</div>
     <div class="meta"><span>${esc(l.city||'—')}</span><span>${esc(l.phone||'')}</span></div>
     <div class="chips"><span class="chip">${esc(BUDGET[l.budget]?.t||'buget ?')}</span><span class="chip">${esc(SPACE[l.space]?.s||'')}</span><span class="chip">${esc(TIME[l.timeline]?.s||'')}</span></div>
-    <div class="meta"><span>${esc(src)}</span><span>${fmtDate(l.createdAt)}</span></div>
+    <div class="meta"><span>${esc(src)}</span><span>${fmtDateTime(l.createdAt)}</span></div>
   </button>`;
 }
 function bindDrops(){
@@ -134,7 +166,7 @@ function bindDrops(){
     col.addEventListener('drop',e=>{e.preventDefault();col.classList.remove('drop');const id=e.dataTransfer.getData('text/plain');if(id)moveStage(id,col.dataset.stage)});
   });
 }
-['fq','fsrc','fcat'].forEach(id=>$(id).addEventListener('input',render));
+['fq','fsrc','fcat','fstatus'].forEach(id=>$(id).addEventListener('input',render));
 
 // ---------- dialog cerere ----------
 function formVal(){return{name:$('f_name').value.trim(),phone:$('f_phone').value.trim(),email:$('f_email').value.trim(),source:$('f_source').value,city:$('f_city').value.trim(),budget:$('f_budget').value,space:$('f_space').value,timeline:$('f_time').value,experience:$('f_exp').value,stage:$('f_stage').value,notes:$('f_notes').value.trim()}}
@@ -152,6 +184,8 @@ function openLead(id){
   $('f_source').value=l?.source||'telefon'; $('f_city').value=l?.city||''; $('f_budget').value=l?.budget||'';
   $('f_space').value=l?.space||''; $('f_time').value=l?.timeline||''; $('f_exp').value=l?.experience||'';
   $('f_stage').value=l?.stage||'nou'; $('f_notes').value=l?.notes||'';
+  $('f_comment').textContent=l?.comment||''; $('f_commentBox').hidden=!l?.comment;
+  if(l) $('dlgTitle').textContent='Cerere: '+l.name+' · '+fmtDateTime(l.createdAt);
   $('btnDelete').hidden=!l; $('btnDelete').classList.remove('armed'); $('btnDelete').textContent='Șterge';
   $('formErr').hidden=true; updateLive(); $('dlgLead').showModal();
 }
@@ -180,7 +214,7 @@ $('btnDelete').addEventListener('click',async()=>{
 async function moveStage(id,stage){
   const l=leads.find(x=>x.id===id); if(!l||l.stage===stage) return;
   const prev=l.stage; l.stage=stage; render();
-  try{await api('/api/leads?id='+encodeURIComponent(id),{method:'PUT',body:JSON.stringify({stage})});toast(`${l.name} → ${STAGES.find(s=>s.id===stage).t}`)}
+  try{await api('/api/leads?id='+encodeURIComponent(id),{method:'PUT',body:JSON.stringify({stage})});toast(`${l.name} → ${STAGES.find(s=>s.id===stage).t} (${ST_LABEL[STATUS_OF[stage]]})`)}
   catch(err){l.stage=prev;render();toast('Nu s-a putut muta: '+err.message)}
 }
 
@@ -200,8 +234,27 @@ $('btnLogout').addEventListener('click',async()=>{try{await fetch('/api/login',{
 let tt; function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
 function notice(m){$('notice').textContent=m;$('notice').hidden=!m}
 
+// ---------- Telegram ----------
+async function loadTg(){
+  const box=$('tgBox');
+  try{
+    const d=await api('/api/telegram');
+    let h='';
+    if(d.ready) h+=`<div class="okline">Activ${d.bot?' · @'+esc(d.bot):''}</div><div>Fiecare cerere din formular ajunge imediat în Telegram.</div><div><button class="btn" id="btnTgTest" type="button">Trimite un mesaj de test</button></div>`;
+    else if(!d.hasToken) h+=`<div class="badline">Neconfigurat</div><div>Adaugă <code>TELEGRAM_BOT_TOKEN</code> și <code>TELEGRAM_CHAT_ID</code> în Vercel → Settings → Environment Variables, apoi Redeploy.</div>`;
+    else{
+      h+=`<div class="badline">Lipsește TELEGRAM_CHAT_ID</div><div>Scrie-i botului${d.bot?' @'+esc(d.bot):''} un mesaj în Telegram, apoi reîncarcă pagina. Copiază ID-ul de mai jos în <code>TELEGRAM_CHAT_ID</code> și fă Redeploy.</div>`;
+      h+=d.chats.length?d.chats.map(c=>`<div><code>${esc(c.id)}</code> ${esc(c.name)}</div>`).join(''):'<div>Încă niciun mesaj primit de bot.</div>';
+    }
+    if(d.error) h+=`<div class="badline">${esc(d.error)}</div>`;
+    box.innerHTML=h;
+    $('btnTgTest')?.addEventListener('click',async()=>{try{await api('/api/telegram',{method:'POST'});toast('Mesajul de test a fost trimis')}catch(e){toast(e.message)}});
+  }catch(e){if(e.message!=='401')box.textContent='Nu s-a putut verifica: '+e.message}
+}
+
 render();
 load();
+loadTg();
 // Colegii văd modificările celorlalți: reîncărcare la 30 s și când revii pe tab (doar dacă nu e deschis un dialog).
 setInterval(()=>{if(!document.hidden&&!$('dlgLead').open&&!$('dlgCities').open)load()},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!$('dlgLead').open)load()});

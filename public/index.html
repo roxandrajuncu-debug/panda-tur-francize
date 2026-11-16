@@ -29,6 +29,12 @@
 
   <div class="filters">
     <input id="fq" type="search" placeholder="Caută după nume, telefon, oraș…" aria-label="Căutare">
+    <select id="fstatus" aria-label="Status">
+      <option value="">Toate statusurile</option>
+      <option value="nouă">Nouă</option>
+      <option value="în lucru">În lucru</option>
+      <option value="închisă">Închisă</option>
+    </select>
     <select id="fsrc" aria-label="Sursa"><option value="">Toate sursele</option></select>
     <select id="fcat" aria-label="Categorie">
       <option value="">Toate categoriile</option>
@@ -37,10 +43,14 @@
       <option value="cold">Rece (sub 45)</option>
       <option value="off">Sub prag buget</option>
     </select>
-    <span class="legend">Trage cardurile între coloane sau deschide-le pentru a schimba etapa</span>
+    <div class="seg" role="group" aria-label="Vizualizare">
+      <button type="button" class="on" data-view="board">Panou</button>
+      <button type="button" data-view="list">Listă</button>
+    </div>
   </div>
 
-  <div class="board-scroll"><div class="board" id="board"></div></div>
+  <div class="board-scroll" id="boardWrap"><div class="board" id="board"></div></div>
+  <div class="list-wrap" id="listWrap" hidden></div>
 
   <details class="help">
     <summary>Formularul pentru candidați · cum se calculează scorul</summary>
@@ -48,6 +58,10 @@
       <div>
         <h3>Linkuri de formular (sursa se marchează automat)</h3>
         <div class="links" id="formLinks"></div>
+      </div>
+      <div>
+        <h3>Notificări Telegram</h3>
+        <div id="tgBox" class="tg">Se verifică…</div>
       </div>
       <div>
         <h3>Buget disponibil (max 40)</h3>
@@ -91,7 +105,8 @@
           <option value="none">Fără experiență</option>
         </select>
       </label>
-      <label>Etapă<select id="f_stage"></select></label>
+      <label>Status și etapă<select id="f_stage"></select></label>
+      <div class="full comment" id="f_commentBox" hidden><b>Comentariul candidatului</b><p id="f_comment"></p></div>
       <label class="full">Notițe (apeluri, întâlniri, observații)<textarea id="f_notes" maxlength="4000"></textarea></label>
     </div>
     <div class="live-score" id="liveScore"></div>

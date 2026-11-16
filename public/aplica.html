@@ -3,81 +3,150 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Deschide o agenție Panda Tur</title>
-<meta name="description" content="Aplică pentru o franciză Panda Tur în Moldova. Completează formularul în 2 minute și te contactăm.">
+<title>Franciză Panda Tour</title>
+<meta name="description" content="Deschide propria agenție de turism Panda Tour în Moldova. Completează cererea de franciză în 2 minute.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
-<link rel="stylesheet" href="/styles.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/aplica.css">
 </head>
 <body>
-<div class="wrap narrow">
-  <header>
-    <div class="brand">
-      <small>Franciză · Panda Tur Moldova</small>
-      <h1>Deschide propria agenție de turism Panda Tur</h1>
-    </div>
-  </header>
-  <p class="lead-in">Completează formularul în aproximativ 2 minute. Echipa departamentului de francize analizează fiecare cerere și te sună pentru o discuție.</p>
-  <div class="facts">
-    <div class="fact"><b>10.000 – 25.000 €</b>investiția de pornire</div>
-    <div class="fact"><b>Toată Moldova</b>orașe și raioane</div>
-    <div class="fact"><b>2 minute</b>durata formularului</div>
+
+<header class="topbar gutter">
+  <div class="inner">
+    <a class="logo" href="https://pandatur.md/ro" aria-label="Panda Tour – pagina principală">
+      <img src="https://pandatur.md/themes/pandatur/siteimg/logo.png" alt="Panda Tour" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'Panda Tour'}))">
+    </a>
+    <a class="toplink" href="https://pandatur.md/ro">← pandatur.md</a>
   </div>
+</header>
 
-  <form class="panel" id="applyForm" novalidate>
-    <div class="grid2">
-      <label>Nume și prenume *<input id="name" autocomplete="name" required maxlength="120"></label>
-      <label>Telefon *<input id="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+373 …"></label>
-      <label>Email<input id="email" type="email" autocomplete="email" maxlength="120"></label>
-      <label>Orașul / localitatea agenției *<input id="city" required maxlength="80" placeholder="ex. Bălți"></label>
+<section class="hero gutter">
+  <div class="inner photo">
+   <div class="grid">
+    <div>
+      <span class="eyebrow"><i></i>Franciză Panda Tour</span>
+      <h1>Deschide propria agenție de turism <em>Panda Tour</em></h1>
+      <p class="sub">Completează cererea în aproximativ 2 minute. Departamentul de francize analizează fiecare cerere și te sună pentru o discuție.</p>
+      <a class="cta" href="#cerere">Completează cererea
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
     </div>
-
-    <fieldset class="choices">
-      <legend>Ce buget aveți disponibil pentru investiție? *</legend>
-      <label class="choice"><input type="radio" name="budget" value="lt10"> Sub 10.000 €</label>
-      <label class="choice"><input type="radio" name="budget" value="mid"> 10.000 – 25.000 €</label>
-      <label class="choice"><input type="radio" name="budget" value="gt25"> Peste 25.000 €</label>
-    </fieldset>
-
-    <fieldset class="choices">
-      <legend>Aveți un spațiu pentru oficiu? *</legend>
-      <label class="choice"><input type="radio" name="space" value="own"> Da, propriu sau închiriat</label>
-      <label class="choice"><input type="radio" name="space" value="searching"> Caut spațiu</label>
-      <label class="choice"><input type="radio" name="space" value="none"> Nu</label>
-    </fieldset>
-
-    <fieldset class="choices">
-      <legend>Când doriți să deschideți agenția? *</legend>
-      <label class="choice"><input type="radio" name="timeline" value="m1"> În maxim 1 lună</label>
-      <label class="choice"><input type="radio" name="timeline" value="m3"> În 1–3 luni</label>
-      <label class="choice"><input type="radio" name="timeline" value="m6"> În 3–6 luni</label>
-      <label class="choice"><input type="radio" name="timeline" value="later"> Peste 6 luni</label>
-    </fieldset>
-
-    <label>Experiență
-      <select id="experience">
-        <option value="">Alege (opțional)</option>
-        <option value="turism">Am lucrat în turism</option>
-        <option value="vanzari">Am lucrat în vânzări / servicii</option>
-        <option value="business">Am un business propriu</option>
-        <option value="none">Nu am experiență în domeniu</option>
-      </select>
-    </label>
-    <label>Mesaj (opțional)<textarea id="message" maxlength="2000" placeholder="Ce v-a atras la franciza Panda Tur?"></textarea></label>
-
-    <div class="hp" aria-hidden="true"><label>Website<input id="website" tabindex="-1" autocomplete="off"></label></div>
-
-    <label class="consent"><input type="checkbox" id="consent"> Sunt de acord ca Panda Tur să prelucreze datele mele pentru a mă contacta în legătură cu franciza.</label>
-
-    <div class="err" id="err" hidden></div>
-    <button class="btn primary" type="submit" id="btn" style="padding:12px 18px;font-size:15px">Trimite cererea</button>
-  </form>
-
-  <div class="panel success" id="done" hidden>
-    <h2>Mulțumim, cererea a fost trimisă</h2>
-    <p class="lead-in" style="margin:0 auto">Un coleg din departamentul de francize Panda Tur te va contacta în zilele următoare.</p>
+    <div class="facts" aria-label="Pe scurt">
+      <div class="fact">
+        <div class="ic">€</div>
+        <div><b>10.000 – 25.000 €</b><span>investiția de pornire</span></div>
+      </div>
+      <div class="fact">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div>
+        <div><b>Toată Moldova</b><span>orașe, centre raionale și localități</span></div>
+      </div>
+      <div class="fact">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 16l20-8-5 12-4-5-5 3 1-5z"/></svg></div>
+        <div><b>Sistem de rezervări online</b><span>platforma Panda Tour pentru agenții</span></div>
+      </div>
+    </div>
+   </div>
+   <a class="credit" href="https://unsplash.com/photos/seashore-during-golden-hour-KMn4VEeEPR8" target="_blank" rel="noopener">Foto: Sean Oulashin / Unsplash</a>
   </div>
-</div>
+</section>
+
+<section class="steps gutter" aria-labelledby="pasi">
+  <div class="inner">
+    <h2 id="pasi">Cum decurge</h2>
+    <ol>
+      <li><b>Trimiți cererea</b><span>Formularul de mai jos, 2 minute</span></li>
+      <li><b>Te sunăm</b><span>Discutăm orașul, bugetul și termenul</span></li>
+      <li><b>Întâlnire</b><span>Prezentarea francizei și a condițiilor</span></li>
+      <li><b>Contract</b><span>Semnăm și pregătim deschiderea agenției</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="form-wrap gutter" id="cerere">
+  <div class="inner">
+    <form class="card" id="applyForm" novalidate>
+      <div class="card-head">
+        <h2>Cererea de franciză</h2>
+        <p>Câmpurile marcate cu * sunt obligatorii.</p>
+      </div>
+
+      <div class="grid2">
+        <label class="f">Nume și prenume *<input id="name" autocomplete="name" required maxlength="120"></label>
+        <label class="f">Telefon *<input id="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+373 …"></label>
+        <label class="f">Email<input id="email" type="email" autocomplete="email" maxlength="120" placeholder="nume@exemplu.md"></label>
+        <label class="f">Orașul / localitatea agenției *<input id="city" required maxlength="80" placeholder="ex. Bălți"></label>
+      </div>
+
+      <fieldset>
+        <legend>Ce buget aveți disponibil pentru investiție? *</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="budget" value="lt10"><span>Sub 10.000 €</span></label>
+          <label class="opt"><input type="radio" name="budget" value="mid"><span>10.000 – 25.000 €</span></label>
+          <label class="opt"><input type="radio" name="budget" value="gt25"><span>Peste 25.000 €</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Aveți un spațiu pentru oficiu? *</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="space" value="own"><span>Da, propriu sau închiriat</span></label>
+          <label class="opt"><input type="radio" name="space" value="searching"><span>Caut spațiu</span></label>
+          <label class="opt"><input type="radio" name="space" value="none"><span>Nu</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Când doriți să deschideți agenția? *</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="timeline" value="m1"><span>În maxim 1 lună</span></label>
+          <label class="opt"><input type="radio" name="timeline" value="m3"><span>În 1–3 luni</span></label>
+          <label class="opt"><input type="radio" name="timeline" value="m6"><span>În 3–6 luni</span></label>
+          <label class="opt"><input type="radio" name="timeline" value="later"><span>Peste 6 luni</span></label>
+        </div>
+      </fieldset>
+
+      <div class="grid2">
+        <label class="f">Experiență
+          <select id="experience">
+            <option value="">Alege (opțional)</option>
+            <option value="turism">Am lucrat în turism</option>
+            <option value="vanzari">Am lucrat în vânzări / servicii</option>
+            <option value="business">Am un business propriu</option>
+            <option value="none">Nu am experiență în domeniu</option>
+          </select>
+        </label>
+        <div></div>
+        <label class="f" style="grid-column:1/-1">Comentariu *<textarea id="message" required minlength="3" maxlength="2000" placeholder="Ce v-a atras la franciza Panda Tour? Când vă putem suna?"></textarea></label>
+      </div>
+
+      <div class="hp" aria-hidden="true"><label>Website<input id="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <label class="consent"><input type="checkbox" id="consent"> Sunt de acord ca Panda Tour să prelucreze datele mele pentru a mă contacta în legătură cu franciza.</label>
+
+      <div class="err" id="err" role="alert" hidden></div>
+      <div class="submit-row">
+        <button class="cta" type="submit" id="btn">Trimite cererea</button>
+        <small>Datele tale ajung doar la departamentul de francize.</small>
+      </div>
+    </form>
+
+    <div class="card success" id="done" hidden>
+      <div class="ok"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2>Mulțumim, cererea a fost trimisă</h2>
+      <p>Un coleg din departamentul de francize Panda Tour te va contacta în zilele următoare.</p>
+      <a class="toplink" href="https://pandatur.md/ro">Înapoi pe pandatur.md</a>
+    </div>
+  </div>
+</section>
+
+<footer class="gutter">
+  <div class="inner">
+    <span>© Panda Tour Moldova · Departamentul francize</span>
+    <a href="https://pandatur.md/ro">pandatur.md</a>
+  </div>
+</footer>
+
 <script>
 const startedAt=Date.now();
 const src=new URLSearchParams(location.search).get('src');
@@ -86,20 +155,29 @@ const radio=n=>(document.querySelector(`input[name="${n}"]:checked`)||{}).value|
 $('applyForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const body={name:$('name').value.trim(),phone:$('phone').value.trim(),email:$('email').value.trim(),city:$('city').value.trim(),
-    budget:radio('budget'),space:radio('space'),timeline:radio('timeline'),experience:$('experience').value,message:$('message').value.trim(),
+    budget:radio('budget'),space:radio('space'),timeline:radio('timeline'),experience:$('experience').value,comment:$('message').value.trim(),
     consent:$('consent').checked,website:$('website').value,startedAt,source:['facebook','instagram'].includes(src)?src:'site'};
-  const miss=[];
-  if(!body.name)miss.push('nume'); if(!body.phone)miss.push('telefon'); if(!body.city)miss.push('oraș');
+  const digits=(body.phone.match(/\d/g)||[]).length;
+  const phoneOk=/^\+?[\d\s()\-.]+$/.test(body.phone)&&digits>=8&&digits<=15;
+  const emailOk=!body.email||/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.email);
+  const miss=[], bad=[];
+  if(body.name.length<2){miss.push('nume');bad.push('name')}
+  if(!body.phone){miss.push('telefon');bad.push('phone')}else if(!phoneOk){miss.push('un telefon valid (ex. +373 69 123 456)');bad.push('phone')}
+  if(!emailOk){miss.push('un email valid');bad.push('email')}
+  if(!body.city){miss.push('oraș');bad.push('city')}
   if(!body.budget)miss.push('buget'); if(!body.space)miss.push('spațiu'); if(!body.timeline)miss.push('termen');
+  if(body.comment.length<3){miss.push('comentariu');bad.push('message')}
+  document.querySelectorAll('[aria-invalid]').forEach(x=>x.removeAttribute('aria-invalid'));
+  bad.forEach(id=>$(id).setAttribute('aria-invalid','true'));
   const err=$('err');
-  if(miss.length){err.textContent='Completează: '+miss.join(', ')+'.';err.hidden=false;return}
+  if(miss.length){err.textContent='Completează: '+miss.join(', ')+'.';err.hidden=false;(bad[0]?$(bad[0]):err).focus();return}
   if(!body.consent){err.textContent='Bifează acordul pentru prelucrarea datelor.';err.hidden=false;return}
   err.hidden=true; $('btn').disabled=true; $('btn').textContent='Se trimite…';
   try{
     const r=await fetch('/api/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const d=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(d.error||'Nu s-a putut trimite');
-    $('applyForm').hidden=true; $('done').hidden=false; window.scrollTo({top:0});
+    $('applyForm').hidden=true; $('done').hidden=false; $('cerere').scrollIntoView();
   }catch(x){err.textContent=x.message+'. Încearcă din nou.';err.hidden=false}
   finally{$('btn').disabled=false;$('btn').textContent='Trimite cererea'}
 });
