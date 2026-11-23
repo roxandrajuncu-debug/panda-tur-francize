@@ -1,10 +1,10 @@
-// /api/telegram — doar pentru echipă. GET: starea botului și chat-urile care i-au scris. POST: mesaj de test.
+// /api/telegram ‚Äî doar pentru echipƒÉ. GET: starea botului »ôi chat-urile care i-au scris. POST: mesaj de test.
 import { isAuthed } from '../lib/auth.js';
-import { send, handleError } from '../lib/http.js';
+import { send, handleError, queryParam } from '../lib/http.js';
 import { tg, telegramReady } from '../lib/telegram.js';
 
 export default async function handler(req, res) {
-  if (!isAuthed(req)) return send(res, 401, { error: 'Autentificare necesară' });
+  if (!isAuthed(req)) return send(res, 401, { error: 'Autentificare necesarƒÉ' });
   const hasToken = Boolean(process.env.TELEGRAM_BOT_TOKEN);
   const hasChat = Boolean(process.env.TELEGRAM_CHAT_ID);
   try {
@@ -24,12 +24,21 @@ export default async function handler(req, res) {
       }
       return send(res, 200, { hasToken, hasChat, ready: telegramReady(), bot, chats, error });
     }
+    if (req.method === 'POST' && queryParam(req, 'action') === 'menu') {
+      // Butonul de meniu al botului deschide Mini App (acela»ôi efect ca @BotFather ‚Üí Bot Settings ‚Üí Menu Button).
+      if (!hasToken) return send(res, 400, { error: 'Lipse»ôte TELEGRAM_BOT_TOKEN √Ăn Vercel.' });
+      const host = req.headers['x-forwarded-host'] || req.headers.host;
+      const url = `https://${host}/tg`;
+      await tg('setChatMenuButton', { menu_button: { type: 'web_app', text: 'Franciza', web_app: { url } } });
+      await tg('setMyDescription', { description: 'Panda Tur Moldova ¬∑ franciza agen»õiei de turism. ApasƒÉ ‚ÄûFranciza‚Äù jos, alege pachetul »ôi lasƒÉ o cerere.' }).catch(() => {});
+      return send(res, 200, { ok: true, url });
+    }
     if (req.method === 'POST') {
-      if (!telegramReady()) return send(res, 400, { error: 'Lipsește TELEGRAM_BOT_TOKEN sau TELEGRAM_CHAT_ID în Vercel.' });
-      await tg('sendMessage', { chat_id: process.env.TELEGRAM_CHAT_ID, text: '✅ Test: notificările pentru cererile de franciză funcționează.' });
+      if (!telegramReady()) return send(res, 400, { error: 'Lipse»ôte TELEGRAM_BOT_TOKEN sau TELEGRAM_CHAT_ID √Ăn Vercel.' });
+      await tg('sendMessage', { chat_id: process.env.TELEGRAM_CHAT_ID, text: '‚úÖ Test: notificƒÉrile pentru cererile de francizƒÉ func»õioneazƒÉ.' });
       return send(res, 200, { ok: true });
     }
-    send(res, 405, { error: 'Metodă nepermisă' });
+    send(res, 405, { error: 'MetodƒÉ nepermisƒÉ' });
   } catch (err) {
     handleError(res, err);
   }
