@@ -4,6 +4,7 @@
 import { isAuthed } from '../lib/auth.js';
 import { send, readBody, queryParam, newId, handleError } from '../lib/http.js';
 import { readBusinessCard } from '../lib/claude.js';
+import { readBusinessCardFree } from '../lib/cfvision.js';
 import { uploadFile, removeFile } from '../lib/store.js';
 
 const TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'application/pdf': 'pdf' };
@@ -28,7 +29,16 @@ export default async function handler(req, res) {
       return send(res, 400, { error: 'Fișierul nu este un PDF valid.' });
     }
 
-    const card = await readBusinessCard({ base64, mediaType });
+    // Claude dacă există ANTHROPIC_API_KEY, altfel modelul gratuit de la Cloudflare.
+    // Modelul gratuit nu citește PDF, așa că pentru PDF primește prima pagină randată în browser (preview JPEG).
+    let card;
+    if (process.env.ANTHROPIC_API_KEY) {
+      card = await readBusinessCard({ base64, mediaType });
+    } else {
+      const preview = String(body.preview || '').replace(/^data:[^,]+,/, '');
+      if (mediaType === 'application/pdf' && preview.length < 1000) return send(res, 400, { error: 'Nu s-a putut citi prima pagină a PDF-ului. Încearcă o fotografie.' });
+      card = await readBusinessCardFree(mediaType === 'application/pdf' ? { base64: preview, mediaType: 'image/jpeg' } : { base64, mediaType });
+    }
     if (!card.is_business_card) {
       return send(res, 422, {
         error: 'Aceasta nu pare a fi o carte de vizită, așa că nu s-a salvat nimic.' + (card.reason ? ' Pe imagine: ' + card.reason : '') + ' Fotografiază cartea de vizită de aproape, pe o suprafață plană.',
