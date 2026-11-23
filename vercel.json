@@ -1,1 +1,10 @@
-{ "cleanUrls": true, "rewrites": [ { "source": "/admin", "destination": "/" } ] }
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/admin", "destination": "/" }
+  ],
+  "functions": {
+    "api/ocr.js": { "maxDuration": 60 },
+    "api/generate.js": { "maxDuration": 60 }
+  }
+}

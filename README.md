@@ -1,50 +1,56 @@
-# Filtru cereri de franciză · Panda Tur Moldova
+# CRM francize ¬∑ Panda Tur Moldova
 
-Aplicație Node.js pentru Vercel care strânge și filtrează cererile celor care vor să cumpere franciza.
+Aplica»õie Node.js pentru Vercel: CRM cu p√¢lnie pentru cererile de francizƒÉ, OCR pentru cƒÉr»õi de vizitƒÉ (Claude), Telegram Mini App »ôi imagini AI.
 
-**Live:** [formular](https://panda-tur-francize.vercel.app/aplica) · [panou admin](https://panda-tur-francize.vercel.app/admin)
+**Live:** [formular](https://panda-tur-francize.vercel.app/aplica) ¬∑ [CRM](https://panda-tur-francize.vercel.app/admin) ¬∑ [Imagini AI](https://panda-tur-francize.vercel.app/imagini) ¬∑ Mini App: `/tg` (se deschide din bot)
 
-Codul se publică automat pe Vercel la fiecare commit în `main`.
+Codul se publicƒÉ automat pe Vercel la fiecare commit √Ăn `main`.
 
-- **`/aplica`**: formular public pentru candidați. Cererea intră automat în coloana „Nou”.
-  - `/aplica?src=facebook` și `/aplica?src=instagram` marchează sursa automat (pune-le în postări și reclame).
-- **`/admin`** (sau `/`): pipeline-ul echipei (protejat cu parolă): Nou → Apel → Întâlnire → Contract → Respins. În fiecare coloană, cele mai noi cereri sunt sus.
-- **`/login`**: intrarea cu parola comună a echipei.
-- **Supabase**: toate cererile stau în tabelul `leads`, cu data creării (`created_at`) și statusul `nouă` / `în lucru` / `închisă`.
-  Statusul vine din etapă: Nou → nouă; Apel, Întâlnire → în lucru; Contract, Respins → închisă.
-- **Telegram**: la fiecare cerere din formular, botul trimite imediat toate datele.
-- În panou: filtru pe status și vizualizarea **Listă** (cele mai noi sus).
+## Ce face
 
-## Variabile în Vercel (nimic secret în cod)
+- **CRM, p√¢lnia:** Nou ‚Üí Apel ‚Üí √ént√¢lnire ‚Üí Contract ‚Üí Achitat / Respins. Cardurile se trag √Ăntre coloane (sau se schimbƒÉ etapa √Ăn fi»ôƒÉ).
+  - Sursa: **Site** (formularul `/aplica`, automat), **Manual** (butonul ‚Äû+ Client manual‚Äù: apel, √Ănt√¢lnire), **Telegram** (Mini App), **Carte de vizitƒÉ** (scanare). Plus Facebook / Instagram prin `/aplica?src=‚Ä¶`.
+  - Fi»ôa clientului: nume, telefon, sursƒÉ, data creƒÉrii, noti»õe »ôi **istoria etapelor cu date** (coloana `history`).
+  - Statusul se trage din etapƒÉ: Nou ‚Üí nouƒÉ; Apel, √ént√¢lnire, Contract ‚Üí √Ăn lucru; Achitat, Respins ‚Üí √ĂnchisƒÉ.
+- **Scanare cƒÉr»õi de vizitƒÉ (Claude API):** ‚ÄûScaneazƒÉ vizitƒÉ‚Äù ‚Üí fotografie de pe telefon sau PDF ‚Üí Claude √Ăntoarce c√¢mpurile ‚Üí ecran de verificare ‚Üí clientul apare √Ăn ‚ÄûNou‚Äù cu sursa ‚ÄûCarte de vizitƒÉ‚Äù. Originalul stƒÉ √Ăn Supabase Storage (bucket privat `documents`) »ôi se deschide din fi»ôƒÉ. DacƒÉ imaginea nu e o carte de vizitƒÉ, apare un mesaj »ôi nu se salveazƒÉ nimic.
+- **Telegram Mini App (`/tg`):** butonul ‚ÄûFranciza‚Äù din meniul botului. Clientul vede pachetele (Start / Standard / Premium), lasƒÉ telefonul ‚Üí cererea intrƒÉ √Ăn CRM cu sursa ‚ÄûTelegram‚Äù »ôi numele din Telegram. Utilizatorul se verificƒÉ pe server (semnƒÉtura `initData` cu tokenul botului). √én browser obi»ônuit pagina cere sƒÉ fie deschisƒÉ √Ăn Telegram. Clientul √Ă»ôi vede »ôi statusul cererilor.
+- **Imagini AI (`/imagini`):** FLUX.1 [schnell] prin Cloudflare Workers AI, apelat de pe server. Istoria generƒÉrilor (bucket privat `generated` + tabelul `generations`), limitƒÉ 5 imagini pe zi (ora Chi»ôinƒÉului).
+- **Telegram:** la fiecare cerere nouƒÉ (site sau Mini App), botul trimite imediat datele √Ăn chat-ul echipei.
 
-| Variabilă | De unde |
+## Variabile √Ăn Vercel (nimic secret √Ăn cod)
+
+| VariabilƒÉ | De unde |
 |---|---|
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | se adaugă singure la Storage → Supabase → Connect |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | se adaugƒÉ singure la Storage ‚Üí Supabase ‚Üí Connect |
 | `TELEGRAM_BOT_TOKEN` | de la @BotFather |
-| `TELEGRAM_CHAT_ID` | apare în panou, la „Notificări Telegram”, după ce îi scrii botului |
-| `ADMIN_PASSWORD`, `SESSION_SECRET` | parola echipei și un șir aleatoriu lung |
+| `TELEGRAM_CHAT_ID` | apare √Ăn panou, la ‚ÄûNotificƒÉri Telegram‚Äù, dupƒÉ ce √Ăi scrii botului |
+| `ADMIN_PASSWORD`, `SESSION_SECRET` | parola echipei »ôi un »ôir aleatoriu lung |
+| `ANTHROPIC_API_KEY` | console.anthropic.com ‚Üí API Keys (cu limitƒÉ de cheltuieli √Ăn Settings ‚Üí Limits) |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | dash.cloudflare.com ‚Üí Workers AI ‚Üí Use REST API (token cu permisiunea ‚ÄûWorkers AI‚Äù) |
+| `GEN_DAILY_LIMIT` | op»õional, implicit 5 |
 
-Tabelele se creează o singură dată cu [supabase/schema.sql](supabase/schema.sql) în Supabase → SQL Editor.
+Tabelele se creeazƒÉ o singurƒÉ datƒÉ √Ăn Supabase ‚Üí SQL Editor: √Ănt√¢i [supabase/schema.sql](supabase/schema.sql), apoi [supabase/migrare-dz2.sql](supabase/migrare-dz2.sql) (etapa Achitat, istoria, Storage, generƒÉri).
 
-## Cum se calculează scorul (0–100)
+## Cum se calculeazƒÉ scorul (0‚Äì100)
 
-| Criteriu | Variantă | Puncte |
+| Criteriu | VariantƒÉ | Puncte |
 |---|---|---|
-| Buget | Sub 10.000 € | 0 (marcat „Sub prag”) |
-| | 10.000 – 25.000 € | 30 |
-| | Peste 25.000 € | 40 |
-| Oraș | Prioritate mare (implicit Chișinău, Bălți) | 25 |
+| Buget | Sub 10.000 ‚Ç¨ | 0 (marcat ‚ÄûSub prag‚Äù) |
+| | 10.000 ‚Äì 25.000 ‚Ç¨ | 30 |
+| | Peste 25.000 ‚Ç¨ | 40 |
+| Ora»ô | Prioritate mare (implicit Chi»ôinƒÉu, BƒÉl»õi) | 25 |
 | | Prioritate medie (centre raionale) | 15 |
-| | Alte localități / diaspora | 5 |
-| Spațiu | Are spațiu / caută / nu are | 20 / 10 / 0 |
-| Termen | ≤1 lună / 1–3 luni / 3–6 luni / >6 luni | 15 / 10 / 5 / 0 |
+| | Alte localitƒÉ»õi / diaspora | 5 |
+| Spa»õiu | Are spa»õiu / cautƒÉ / nu are | 20 / 10 / 0 |
+| Termen | ‚â§1 lunƒÉ / 1‚Äì3 luni / 3‚Äì6 luni / >6 luni | 15 / 10 / 5 / 0 |
 
-**Fierbinte** 70+ · **Cald** 45–69 · **Rece** sub 45. Listele de orașe se schimbă din butonul „Priorități orașe”.
+**Fierbinte** 70+ ¬∑ **Cald** 45‚Äì69 ¬∑ **Rece** sub 45. Listele de ora»ôe se schimbƒÉ din butonul ‚ÄûPrioritƒÉ»õi ora»ôe‚Äù.
 
-## Structură
+## StructurƒÉ
 
 ```
-api/      funcții serverless: leads (pipeline), apply (formular public + Telegram), login, config (orașe), telegram (stare/test)
-lib/      stocare Supabase, Telegram, autentificare, validare
-public/   pagini: index (pipeline), aplica (candidați), login + styles.css, app.js
+api/      leads (CRM), apply (formular public), ocr (Claude), doc (original), tg-app (Mini App),
+          generate (imagini), telegram (stare, test, buton meniu), login, config
+lib/      store (Supabase + Storage), claude, tgauth (verificare initData), imagegen, telegram, auth, lead
+public/   index (CRM), aplica, tg (Mini App), imagini, login + styles.css, app.js
 ```

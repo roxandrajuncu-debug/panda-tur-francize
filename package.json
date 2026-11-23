@@ -2,11 +2,12 @@
   "name": "panda-tur-francize",
   "version": "1.0.0",
   "private": true,
-  "description": "Filtrarea cererilor pentru franciza Panda Tur Moldova",
+  "description": "Panda Tur Moldova: CRM francize, OCR cƒÉr»õi de vizitƒÉ, Telegram Mini App, imagini AI",
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "1.7.0"
   }
 }
