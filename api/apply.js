@@ -1,15 +1,15 @@
-// /api/apply ‚Äî formularul public completat de candida»õi. Cererea intrƒÉ ca ‚ÄûnouƒÉ‚Äù »ôi pleacƒÉ √Ăn Telegram.
+// /api/apply — formularul public completat de candidați. Cererea intră ca „nouă” și pleacă în Telegram.
 import { send, readBody, newId, handleError } from '../lib/http.js';
 import { cleanLead, withHistory } from '../lib/lead.js';
 import { saveLead } from '../lib/store.js';
 import { notifyNewLead } from '../lib/telegram.js';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return send(res, 405, { error: 'MetodƒÉ nepermisƒÉ' }, { Allow: 'POST' });
+  if (req.method !== 'POST') return send(res, 405, { error: 'Metodă nepermisă' }, { Allow: 'POST' });
   try {
     const body = await readBody(req);
 
-    // Protec»õie anti-spam: c√¢mp ascuns completat doar de robo»õi + timp minim de completare.
+    // Protecție anti-spam: câmp ascuns completat doar de roboți + timp minim de completare.
     if (body.website) return send(res, 200, { ok: true });
     const startedAt = Number(body.startedAt) || 0;
     if (startedAt && Date.now() - startedAt < 3000) return send(res, 200, { ok: true });
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       },
       { requireAll: true, requireComment: true },
     );
-    if (missing.length) return send(res, 400, { error: 'CompleteazƒÉ: ' + missing.join(', ') });
+    if (missing.length) return send(res, 400, { error: 'Completează: ' + missing.join(', ') });
 
     const now = new Date().toISOString();
     const saved = await saveLead({ ...lead, docPath: '', docType: '', id: newId(), createdAt: now, updatedAt: now, history: withHistory(null, 'nou', now) });

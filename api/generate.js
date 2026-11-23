@@ -1,5 +1,5 @@
-// /api/generate ‚Äî imagini AI pentru postƒÉri »ôi oferte de francizƒÉ. Doar pentru echipƒÉ.
-// GET: istoria generƒÉrilor + c√¢te au rƒÉmas azi. POST {prompt, style}: genereazƒÉ pe server, salveazƒÉ, √Ăntoarce rezultatul.
+// /api/generate — imagini AI pentru postări și oferte de franciză. Doar pentru echipă.
+// GET: istoria generărilor + câte au rămas azi. POST {prompt, style}: generează pe server, salvează, întoarce rezultatul.
 import { isAuthed } from '../lib/auth.js';
 import { send, readBody, newId, handleError } from '../lib/http.js';
 import { generateImage, startOfDayChisinau } from '../lib/imagegen.js';
@@ -22,7 +22,7 @@ async function history() {
 }
 
 export default async function handler(req, res) {
-  if (!isAuthed(req)) return send(res, 401, { error: 'Autentificare necesarƒÉ' });
+  if (!isAuthed(req)) return send(res, 401, { error: 'Autentificare necesară' });
   try {
     const since = startOfDayChisinau().toISOString();
 
@@ -30,24 +30,24 @@ export default async function handler(req, res) {
       const used = await countGenerationsSince(USER, since);
       return send(res, 200, { limit: LIMIT, used, items: await history() });
     }
-    if (req.method !== 'POST') return send(res, 405, { error: 'MetodƒÉ nepermisƒÉ' });
+    if (req.method !== 'POST') return send(res, 405, { error: 'Metodă nepermisă' });
 
     const body = await readBody(req);
     const prompt = String(body.prompt || '').trim().slice(0, 800);
     const style = STYLES[body.style] ? body.style : 'post';
-    if (prompt.length < 5) return send(res, 400, { error: 'Descrie imaginea √Ăn c√¢teva cuvinte.' });
+    if (prompt.length < 5) return send(res, 400, { error: 'Descrie imaginea în câteva cuvinte.' });
 
     const used = await countGenerationsSince(USER, since);
     if (used >= LIMIT) {
-      return send(res, 429, { error: `A»õi atins limita de ${LIMIT} imagini pe zi. Limita se re√Ănnoie»ôte la miezul nop»õii (ora Chi»ôinƒÉului).`, limit: LIMIT, used });
+      return send(res, 429, { error: `Ați atins limita de ${LIMIT} imagini pe zi. Limita se reînnoiește la miezul nopții (ora Chișinăului).`, limit: LIMIT, used });
     }
 
-    // RezervƒÉm locul √Ăn limitƒÉ √Ănainte de generare, ca douƒÉ clickuri simultane sƒÉ nu treacƒÉ de limitƒÉ.
+    // Rezervăm locul în limită înainte de generare, ca două clickuri simultane să nu treacă de limită.
     const id = newId();
     await insertGeneration({ id, userKey: USER, prompt, style });
     try {
       let promptEn = '';
-      try { promptEn = await toImagePrompt(prompt, STYLES[style]); } catch (e) { console.warn('Traducerea promptului a e»ôuat:', e.message); }
+      try { promptEn = await toImagePrompt(prompt, STYLES[style]); } catch (e) { console.warn('Traducerea promptului a eșuat:', e.message); }
       const finalPrompt = `${promptEn || prompt}. Style: ${STYLES[style]}. No text, no watermark.`;
       const jpg = await generateImage(finalPrompt);
       const path = `${id}.jpg`;

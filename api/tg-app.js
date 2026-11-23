@@ -1,6 +1,6 @@
-// /api/tg-app ‚Äî backend-ul pentru Telegram Mini App (pagina /tg).
-// Utilizatorul se identificƒÉ DOAR din initData verificat pe server (antetul X-Telegram-Init-Data).
-// FƒÉrƒÉ initData valid (ex. pagina deschisƒÉ √Ăn browser obi»ônuit) nu se √Ăntoarce nimic personal.
+// /api/tg-app — backend-ul pentru Telegram Mini App (pagina /tg).
+// Utilizatorul se identifică DOAR din initData verificat pe server (antetul X-Telegram-Init-Data).
+// Fără initData valid (ex. pagina deschisă în browser obișnuit) nu se întoarce nimic personal.
 import { send, readBody, newId, handleError } from '../lib/http.js';
 import { verifyInitData } from '../lib/tgauth.js';
 import { cleanLead, withHistory } from '../lib/lead.js';
@@ -8,7 +8,7 @@ import { saveLead, listLeadsByTelegram } from '../lib/store.js';
 import { notifyNewLead, tg } from '../lib/telegram.js';
 import { PACKAGE_LIST, PACKAGE_TITLE } from '../lib/packages.js';
 
-const STAGE_LABEL = { nou: 'PrimitƒÉ', apel: 'Te sunƒÉm', intalnire: '√ént√¢lnire programatƒÉ', contract: 'Contract √Ăn pregƒÉtire', achitat: 'FrancizƒÉ achitatƒÉ', respins: '√énchisƒÉ' };
+const STAGE_LABEL = { nou: 'Primită', apel: 'Te sunăm', intalnire: 'Întâlnire programată', contract: 'Contract în pregătire', achitat: 'Franciză achitată', respins: 'Închisă' };
 
 async function botUsername() {
   try { return (await tg('getMe')).username; } catch { return ''; }
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   try {
     const user = verifyInitData(req.headers['x-telegram-init-data']);
     if (!user) {
-      return send(res, 401, { error: 'Deschide aplica»õia din Telegram.', bot: req.method === 'GET' ? await botUsername() : '' });
+      return send(res, 401, { error: 'Deschide aplicația din Telegram.', bot: req.method === 'GET' ? await botUsername() : '' });
     }
     const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username || 'Utilizator Telegram';
 
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       const body = await readBody(req);
       const mine = await listLeadsByTelegram(user.id);
       const today = mine.filter((l) => Date.now() - new Date(l.createdAt) < 86400_000);
-      if (today.length >= 3) return send(res, 429, { error: 'Ai trimis deja 3 cereri azi. Te contactƒÉm √Ăn cur√¢nd.' });
+      if (today.length >= 3) return send(res, 429, { error: 'Ai trimis deja 3 cereri azi. Te contactăm în curând.' });
 
       const { lead, missing } = cleanLead({
         name: fullName, // numele vine din Telegram (verificat), nu din formular
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         stage: 'nou',
       });
       if (!lead.package) missing.push('pachet');
-      if (missing.length) return send(res, 400, { error: 'CompleteazƒÉ: ' + missing.join(', ') });
+      if (missing.length) return send(res, 400, { error: 'Completează: ' + missing.join(', ') });
 
       const now = new Date().toISOString();
       const saved = await saveLead({ ...lead, docPath: '', docType: '', tgUserId: user.id, id: newId(), createdAt: now, updatedAt: now, history: withHistory(null, 'nou', now) });
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
       await notifyNewLead(saved, host ? `https://${host}/admin` : '');
       return send(res, 201, { ok: true, name: fullName });
     }
-    send(res, 405, { error: 'MetodƒÉ nepermisƒÉ' });
+    send(res, 405, { error: 'Metodă nepermisă' });
   } catch (err) {
     handleError(res, err);
   }
