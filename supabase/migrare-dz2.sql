@@ -1,6 +1,6 @@
--- –î–ó ‚Ññ2. RuleazƒÉ O SINGURƒÇ DATƒÇ √Ăn Supabase ‚Üí SQL Editor ‚Üí New query ‚Üí Run (dupƒÉ schema.sql).
+-- ДЗ №2. Rulează O SINGURĂ DATĂ în Supabase → SQL Editor → New query → Run (după schema.sql).
 
--- 1. CRM: etapa nouƒÉ ‚ÄûAchitat‚Äù, istoria etapelor, document original, utilizator Telegram
+-- 1. CRM: etapa nouă „Achitat”, istoria etapelor, document original, utilizator Telegram
 alter table public.leads drop constraint if exists leads_stage_check;
 alter table public.leads add constraint leads_stage_check
   check (stage in ('nou', 'apel', 'intalnire', 'contract', 'achitat', 'respins'));
@@ -12,12 +12,12 @@ alter table public.leads add column if not exists tg_user_id bigint;
 alter table public.leads add column if not exists package    text  not null default '';
 create index if not exists leads_tg_user_idx on public.leads (tg_user_id);
 
--- Cererile vechi primesc √Ăn istorie etapa la care sunt acum
+-- Cererile vechi primesc în istorie etapa la care sunt acum
 update public.leads
    set history = jsonb_build_array(jsonb_build_object('stage', stage, 'at', created_at))
  where history = '[]'::jsonb;
 
--- 2. Istoria generƒÉrilor de imagini (»ôi limita pe zi)
+-- 2. Istoria generărilor de imagini (și limita pe zi)
 create table if not exists public.generations (
   id         text primary key,
   created_at timestamptz not null default now(),
@@ -31,7 +31,7 @@ create table if not exists public.generations (
 create index if not exists generations_user_day_idx on public.generations (user_key, created_at desc);
 alter table public.generations enable row level security;
 
--- 3. Fi»ôiere private: originalele documentelor »ôi imaginile generate
+-- 3. Fișiere private: originalele documentelor și imaginile generate
 insert into storage.buckets (id, name, public)
 values ('documents', 'documents', false), ('generated', 'generated', false)
 on conflict (id) do nothing;
