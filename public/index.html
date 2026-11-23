@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Filtru Francize Panda Tur</title>
+<title>CRM Francize Panda Tur</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
 <link rel="stylesheet" href="/styles.css">
@@ -13,13 +13,15 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <small>Departamentul francize · Panda Tur Moldova</small>
-      <h1>Filtru cereri de franciză</h1>
+      <small>Departamentul francize ¬∑ Panda Tur Moldova</small>
+      <h1>CRM francize</h1>
     </div>
     <div class="actions">
-      <button class="btn ghost" id="btnLogout" type="button">Ieșire</button>
-      <button class="btn" id="btnCities" type="button">Priorități orașe</button>
-      <button class="btn primary" id="btnAdd" type="button">+ Cerere nouă</button>
+      <button class="btn ghost" id="btnLogout" type="button">Ie»ôire</button>
+      <button class="btn" id="btnCities" type="button">PrioritƒÉ»õi ora»ôe</button>
+      <a class="btn" href="/imagini">Imagini AI</a>
+      <button class="btn" id="btnScan" type="button">ScaneazƒÉ vizitƒÉ</button>
+      <button class="btn primary" id="btnAdd" type="button">+ Client manual</button>
     </div>
   </header>
 
@@ -28,24 +30,24 @@
   <section class="stats" id="stats" aria-label="Sumar"></section>
 
   <div class="filters">
-    <input id="fq" type="search" placeholder="Caută după nume, telefon, oraș…" aria-label="Căutare">
+    <input id="fq" type="search" placeholder="CautƒÉ dupƒÉ nume, telefon, ora»ô‚Ä¶" aria-label="CƒÉutare">
     <select id="fstatus" aria-label="Status">
       <option value="">Toate statusurile</option>
-      <option value="nouă">Nouă</option>
-      <option value="în lucru">În lucru</option>
-      <option value="închisă">Închisă</option>
+      <option value="nouƒÉ">NouƒÉ</option>
+      <option value="√Ăn lucru">√én lucru</option>
+      <option value="√ĂnchisƒÉ">√énchisƒÉ</option>
     </select>
     <select id="fsrc" aria-label="Sursa"><option value="">Toate sursele</option></select>
     <select id="fcat" aria-label="Categorie">
       <option value="">Toate categoriile</option>
       <option value="hot">Fierbinte (70+)</option>
-      <option value="warm">Cald (45–69)</option>
+      <option value="warm">Cald (45‚Äì69)</option>
       <option value="cold">Rece (sub 45)</option>
       <option value="off">Sub prag buget</option>
     </select>
     <div class="seg" role="group" aria-label="Vizualizare">
       <button type="button" class="on" data-view="board">Panou</button>
-      <button type="button" data-view="list">Listă</button>
+      <button type="button" data-view="list">ListƒÉ</button>
     </div>
   </div>
 
@@ -53,32 +55,32 @@
   <div class="list-wrap" id="listWrap" hidden></div>
 
   <details class="help">
-    <summary>Formularul pentru candidați · cum se calculează scorul</summary>
+    <summary>Formularul pentru candida»õi ¬∑ cum se calculeazƒÉ scorul</summary>
     <div class="help-grid">
       <div>
-        <h3>Linkuri de formular (sursa se marchează automat)</h3>
+        <h3>Linkuri de formular (sursa se marcheazƒÉ automat)</h3>
         <div class="links" id="formLinks"></div>
       </div>
       <div>
-        <h3>Notificări Telegram</h3>
-        <div id="tgBox" class="tg">Se verifică…</div>
+        <h3>NotificƒÉri Telegram</h3>
+        <div id="tgBox" class="tg">Se verificƒÉ‚Ä¶</div>
       </div>
       <div>
         <h3>Buget disponibil (max 40)</h3>
         <table id="tBudget"></table>
       </div>
       <div>
-        <h3>Oraș / regiune (max 25)</h3>
+        <h3>Ora»ô / regiune (max 25)</h3>
         <table id="tCity"></table>
       </div>
       <div>
-        <h3>Spațiu (max 20) și termen (max 15)</h3>
+        <h3>Spa»õiu (max 20) »ôi termen (max 15)</h3>
         <table id="tSpace"></table>
       </div>
       <div>
-        <h3>Întrebările formularului (pentru Facebook Lead Ads)</h3>
+        <h3>√éntrebƒÉrile formularului (pentru Facebook Lead Ads)</h3>
         <pre class="q" id="qText"></pre>
-        <button class="btn" id="btnCopyQ" type="button">Copiază întrebările</button>
+        <button class="btn" id="btnCopyQ" type="button">CopiazƒÉ √ĂntrebƒÉrile</button>
       </div>
     </div>
   </details>
@@ -86,36 +88,46 @@
 
 <dialog id="dlgLead">
   <form class="dlg" id="leadForm" novalidate>
-    <h2 id="dlgTitle">Cerere nouă</h2>
+    <h2 id="dlgTitle">Cerere nouƒÉ</h2>
     <div class="grid2">
-      <label>Nume și prenume *<input id="f_name" required maxlength="120"></label>
+      <label>Nume »ôi prenume *<input id="f_name" required maxlength="120"></label>
       <label>Telefon *<input id="f_phone" required maxlength="40" inputmode="tel"></label>
       <label>Email<input id="f_email" type="email" maxlength="120"></label>
       <label>Sursa cererii<select id="f_source"></select></label>
-      <label>Oraș / localitate *<input id="f_city" list="cityList" required maxlength="80"></label>
-      <label>Buget disponibil *<select id="f_budget" required></select></label>
-      <label>Spațiu pentru oficiu *<select id="f_space" required></select></label>
-      <label>Când vrea să deschidă *<select id="f_time" required></select></label>
-      <label>Experiență (informativ)
+      <label>Companie<input id="f_company" maxlength="160"></label>
+      <label>Pachet dorit
+        <select id="f_package">
+          <option value="">Nespecificat</option>
+          <option value="start">Start</option>
+          <option value="standard">Standard</option>
+          <option value="premium">Premium</option>
+        </select>
+      </label>
+      <label>Ora»ô / localitate<input id="f_city" list="cityList" required maxlength="80"></label>
+      <label>Buget disponibil<select id="f_budget"></select></label>
+      <label>Spa»õiu pentru oficiu<select id="f_space"></select></label>
+      <label>C√¢nd vrea sƒÉ deschidƒÉ<select id="f_time"></select></label>
+      <label>Experien»õƒÉ (informativ)
         <select id="f_exp">
           <option value="">Nespecificat</option>
           <option value="turism">Turism</option>
-          <option value="vanzari">Vânzări / servicii</option>
+          <option value="vanzari">V√¢nzƒÉri / servicii</option>
           <option value="business">Are business propriu</option>
-          <option value="none">Fără experiență</option>
+          <option value="none">FƒÉrƒÉ experien»õƒÉ</option>
         </select>
       </label>
-      <label>Status și etapă<select id="f_stage"></select></label>
+      <label>Etapa √Ăn p√¢lnie<select id="f_stage"></select></label>
       <div class="full comment" id="f_commentBox" hidden><b>Comentariul candidatului</b><p id="f_comment"></p></div>
-      <label class="full">Notițe (apeluri, întâlniri, observații)<textarea id="f_notes" maxlength="4000"></textarea></label>
+      <label class="full">Noti»õe (apeluri, √Ănt√¢lniri, observa»õii)<textarea id="f_notes" maxlength="4000"></textarea></label>
+      <div class="full card-info" id="f_info" hidden></div>
     </div>
     <div class="live-score" id="liveScore"></div>
     <div class="err" id="formErr" hidden></div>
     <div class="dlg-foot">
-      <div><button class="btn danger" id="btnDelete" type="button" hidden>Șterge</button></div>
+      <div><button class="btn danger" id="btnDelete" type="button" hidden>»òterge</button></div>
       <div>
-        <button class="btn" type="button" id="btnCancel">Anulează</button>
-        <button class="btn primary" type="submit" id="btnSave">Salvează</button>
+        <button class="btn" type="button" id="btnCancel">AnuleazƒÉ</button>
+        <button class="btn primary" type="submit" id="btnSave">SalveazƒÉ</button>
       </div>
     </div>
   </form>
@@ -123,8 +135,8 @@
 
 <dialog id="dlgCities">
   <form class="dlg" id="cityForm">
-    <h2>Priorități orașe</h2>
-    <p class="lead-in">Câte un oraș pe rând. Localitățile care nu sunt în nicio listă (inclusiv diaspora) primesc prioritate mică, 5 puncte.</p>
+    <h2>PrioritƒÉ»õi ora»ôe</h2>
+    <p class="lead-in">C√¢te un ora»ô pe r√¢nd. LocalitƒÉ»õile care nu sunt √Ăn nicio listƒÉ (inclusiv diaspora) primesc prioritate micƒÉ, 5 puncte.</p>
     <div class="grid2">
       <label>Prioritate mare (25 puncte)<textarea id="c_high" style="min-height:160px"></textarea></label>
       <label>Prioritate medie (15 puncte)<textarea id="c_med" style="min-height:160px"></textarea></label>
@@ -132,11 +144,51 @@
     <div class="dlg-foot">
       <div></div>
       <div>
-        <button class="btn" type="button" id="btnCityCancel">Anulează</button>
-        <button class="btn primary" type="submit">Salvează prioritățile</button>
+        <button class="btn" type="button" id="btnCityCancel">AnuleazƒÉ</button>
+        <button class="btn primary" type="submit">SalveazƒÉ prioritƒÉ»õile</button>
       </div>
     </div>
   </form>
+</dialog>
+
+<dialog id="dlgScan">
+  <div class="dlg">
+    <h2>ScaneazƒÉ o carte de vizitƒÉ</h2>
+    <div id="scanStep1">
+      <p class="lead-in">FotografiazƒÉ cartea de vizitƒÉ cu telefonul sau √ĂncarcƒÉ un PDF. Claude cite»ôte datele, tu le verifici, apoi clientul apare √Ăn coloana ‚ÄûNou‚Äù cu sursa ‚ÄûCarte de vizitƒÉ‚Äù.</p>
+      <label class="drop" id="scanDrop">
+        <input type="file" id="scanFile" accept="image/*,application/pdf">
+        <strong>Alege fotografia sau PDF-ul</strong>
+        <span>JPG, PNG, HEIC sau PDF (p√¢nƒÉ la 3 MB)</span>
+      </label>
+      <div class="scan-busy" id="scanBusy" hidden><span class="spin"></span> Claude cite»ôte documentul‚Ä¶</div>
+      <div class="err" id="scanErr" hidden></div>
+      <div class="dlg-foot"><div></div><div><button class="btn" type="button" id="btnScanClose">√énchide</button></div></div>
+    </div>
+    <form id="scanStep2" hidden novalidate>
+      <p class="lead-in">VerificƒÉ datele recunoscute »ôi corecteazƒÉ-le dacƒÉ e nevoie. Nimic nu se salveazƒÉ √Ăn CRM p√¢nƒÉ nu ape»ôi ‚ÄûSalveazƒÉ clientul‚Äù.</p>
+      <div class="review">
+        <div class="review-doc" id="scanPreview"></div>
+        <div class="grid2">
+          <label>Nume »ôi prenume *<input id="s_name" maxlength="120"></label>
+          <label>Telefon *<input id="s_phone" maxlength="40" inputmode="tel"></label>
+          <label>Companie<input id="s_company" maxlength="160"></label>
+          <label>Func»õie<input id="s_position" maxlength="120"></label>
+          <label>Email<input id="s_email" maxlength="120"></label>
+          <label>Ora»ô<input id="s_city" maxlength="80"></label>
+          <label class="full">Alte date de pe carte<textarea id="s_other" maxlength="2000"></textarea></label>
+        </div>
+      </div>
+      <div class="err" id="scanErr2" hidden></div>
+      <div class="dlg-foot">
+        <div><button class="btn" type="button" id="btnScanAgain">Alt document</button></div>
+        <div>
+          <button class="btn" type="button" id="btnScanCancel">AnuleazƒÉ</button>
+          <button class="btn primary" type="submit" id="btnScanSave">SalveazƒÉ clientul</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </dialog>
 
 <datalist id="cityList"></datalist>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Imagini AI ¬∑ Panda Tur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.gen{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.gen{grid-template-columns:1fr}}
+.styles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quota{display:flex;align-items:center;gap:10px;font-weight:600}
+.quota .bar{flex:1;height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.quota .bar i{display:block;height:100%;background:var(--accent)}
+.result{background:var(--surface-2);border-radius:14px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--muted);text-align:center;padding:16px}
+.result img{width:100%;height:100%;object-fit:cover;display:block}
+.result.has{padding:0}
+.limit{background:var(--hot-soft);color:var(--hot);border-radius:10px;padding:10px 14px;font-weight:700}
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.hist-grid figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.hist-grid img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.hist-grid figcaption{padding:8px 10px;font-size:12px;display:flex;flex-direction:column;gap:2px}
+.hist-grid figcaption span{color:var(--muted)}
+.hist-grid a{display:block}
+.examples{display:flex;flex-wrap:wrap;gap:6px}
+.examples button{font-size:12px;border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:4px 10px;cursor:pointer;color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <small>Panda Tur Moldova ¬∑ francize</small>
+      <h1>Imagini AI pentru postƒÉri »ôi oferte</h1>
+    </div>
+    <div class="actions"><a class="btn" href="/admin">‚Üê √énapoi la CRM</a></div>
+  </header>
+
+  <div class="gen">
+    <form class="panel" id="form" novalidate>
+      <p class="lead-in">Descrie imaginea √Ăn rom√¢nƒÉ. Serverul nostru o trimite la modelul FLUX.1 (Cloudflare Workers AI), rezultatul se salveazƒÉ √Ăn istorie.</p>
+      <label>Ce trebuie sƒÉ fie √Ăn imagine
+        <textarea id="prompt" maxlength="800" style="min-height:110px" placeholder="Ex.: Oficiu nou Panda Tur √Ăn centrul BƒÉl»õiului, vitrinƒÉ cu afi»ôe de vacan»õƒÉ, clien»õi ferici»õi la birou"></textarea>
+      </label>
+      <div class="examples" id="examples"></div>
+      <fieldset class="choices">
+        <legend>Stil</legend>
+        <div class="styles">
+          <label class="choice"><input type="radio" name="style" value="post" checked> Postare Instagram</label>
+          <label class="choice"><input type="radio" name="style" value="office"> Interior oficiu</label>
+          <label class="choice"><input type="radio" name="style" value="travel"> Destina»õie de vacan»õƒÉ</label>
+          <label class="choice"><input type="radio" name="style" value="kp"> Ilustra»õie pentru ofertƒÉ</label>
+        </div>
+      </fieldset>
+      <div class="quota"><span id="quotaText">Azi: ‚Ä¶</span><div class="bar"><i id="quotaBar" style="width:0"></i></div></div>
+      <div class="limit" id="limitMsg" hidden></div>
+      <div class="err" id="err" hidden></div>
+      <button class="btn primary" type="submit" id="go" style="justify-content:center;padding:12px">GenereazƒÉ imaginea</button>
+    </form>
+    <div class="result" id="result">Aici apare imaginea generatƒÉ (dureazƒÉ 5‚Äì15 secunde).</div>
+  </div>
+
+  <section>
+    <h2 style="font-family:var(--f-display);font-weight:500;font-size:18px;margin:8px 0 12px">Istoria generƒÉrilor</h2>
+    <div class="hist-grid" id="history"><p class="lead-in">Se √ĂncarcƒÉ‚Ä¶</p></div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const fmt = (iso) => new Date(iso).toLocaleString('ro-RO', { timeZone: 'Europe/Chisinau', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+const STYLE = { post: 'Postare', office: 'Oficiu', travel: 'Destina»õie', kp: 'OfertƒÉ' };
+const EXAMPLES = [
+  'Echipa unei agen»õii de turism tƒÉind panglica la deschiderea unui oficiu nou',
+  'Familie fericitƒÉ pe o plajƒÉ din Antalya la apus',
+  'Birou modern de agen»õie de turism cu hartƒÉ mare a lumii pe perete',
+  'Antreprenor t√¢nƒÉr care semneazƒÉ un contract de francizƒÉ',
+];
+$('examples').innerHTML = EXAMPLES.map((e) => `<button type="button">${esc(e)}</button>`).join('');
+$('examples').addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') $('prompt').value = e.target.textContent; });
+
+let state = { limit: 5, used: 0 };
+function renderQuota() {
+  const left = Math.max(0, state.limit - state.used);
+  $('quotaText').textContent = `Azi: ${state.used} din ${state.limit} imagini`;
+  $('quotaBar').style.width = Math.min(100, (state.used / state.limit) * 100) + '%';
+  if (!left) {
+    $('limitMsg').textContent = `A»õi atins limita de ${state.limit} imagini pe zi. Limita se re√Ănnoie»ôte la miezul nop»õii (ora Chi»ôinƒÉului).`;
+    $('limitMsg').hidden = false;
+  } else $('limitMsg').hidden = true;
+}
+function renderHistory(items) {
+  $('history').innerHTML = items.length
+    ? items.map((g) => `<figure><a href="${esc(g.url)}" target="_blank" rel="noopener"><img src="${esc(g.url)}" alt="${esc(g.prompt)}" loading="lazy"></a>
+        <figcaption><b>${esc(g.prompt)}</b><span>${esc(STYLE[g.style] || '')} ¬∑ ${esc(fmt(g.createdAt))}</span></figcaption></figure>`).join('')
+    : '<p class="lead-in">√éncƒÉ nicio imagine generatƒÉ.</p>';
+}
+async function api(method, body) {
+  const r = await fetch('/api/generate', { method, credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+  if (r.status === 401) { location.href = '/login'; throw new Error('401'); }
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(d.error || 'Eroare de server'); e.status = r.status; e.data = d; throw e; }
+  return d;
+}
+async function load() {
+  try { const d = await api('GET'); state = d; renderQuota(); renderHistory(d.items); }
+  catch (e) { if (e.message !== '401') $('history').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+$('form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const prompt = $('prompt').value.trim();
+  if (prompt.length < 5) { $('err').textContent = 'Descrie imaginea √Ăn c√¢teva cuvinte.'; $('err').hidden = false; return; }
+  $('err').hidden = true; $('go').disabled = true; $('go').textContent = 'Se genereazƒÉ‚Ä¶';
+  $('result').className = 'result'; $('result').innerHTML = '<span class="spin"></span>';
+  try {
+    const d = await api('POST', { prompt, style: document.querySelector('input[name=style]:checked').value });
+    state = d; renderQuota(); renderHistory(d.items);
+    const g = d.items[0];
+    $('result').className = 'result has'; $('result').innerHTML = `<img src="${esc(g.url)}" alt="${esc(g.prompt)}">`;
+  } catch (e) {
+    if (e.status === 429) { state = { ...state, ...e.data }; renderQuota(); }
+    $('result').className = 'result'; $('result').textContent = e.status === 429 ? 'Limita zilnicƒÉ a fost atinsƒÉ.' : 'Imaginea nu a fost generatƒÉ.';
+    $('err').textContent = e.message; $('err').hidden = false;
+  } finally { $('go').disabled = false; $('go').textContent = 'GenereazƒÉ imaginea'; }
+});
+load();
+</script>
+</body>
+</html>

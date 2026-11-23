@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Franciza Panda Tur</title>
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:var(--tg-theme-bg-color,#f4f6f3); --surface:var(--tg-theme-section-bg-color,#fff); --fg:var(--tg-theme-text-color,#18201b);
+  --muted:var(--tg-theme-hint-color,#5d6a61); --accent:var(--tg-theme-button-color,#1f7a4c); --accent-fg:var(--tg-theme-button-text-color,#fff);
+  --line:color-mix(in srgb,var(--muted) 30%,transparent); --soft:color-mix(in srgb,var(--accent) 12%,var(--surface));
+  --danger:var(--tg-theme-destructive-text-color,#b42318);
+  --top:calc(var(--tg-safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px));
+  --bottom:calc(var(--tg-safe-area-inset-bottom,0px) + var(--tg-content-safe-area-inset-bottom,0px));
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:"Manrope",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;padding:calc(16px + var(--top)) 16px calc(28px + var(--bottom));display:flex;flex-direction:column;gap:16px}
+h1{font-family:"Unbounded","Manrope",sans-serif;font-weight:700;font-size:22px;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:4px 0 0}
+p{margin:0}
+.muted{color:var(--muted)}
+.brand{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.pk{display:flex;flex-direction:column;gap:10px}
+.pkg{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:2px solid transparent;border-radius:14px;padding:14px;cursor:pointer}
+.pkg:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.pkg input{accent-color:var(--accent);margin-top:4px;width:18px;height:18px;flex:none}
+.pkg b{display:block;font-size:16px}
+.pkg .price{color:var(--accent);font-weight:700;font-size:13px}
+.pkg p{font-size:13px;color:var(--muted);margin-top:4px}
+.panel{background:var(--surface);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted)}
+input,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:16px;font-weight:500;width:100%}
+textarea{min-height:72px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+button.main{font:inherit;font-weight:700;font-size:16px;border:none;border-radius:12px;padding:14px;background:var(--accent);color:var(--accent-fg);cursor:pointer;width:100%}
+button.main:disabled{opacity:.55}
+.err{color:var(--danger);font-weight:600;font-size:14px}
+.ok{text-align:center;padding:24px 8px;display:flex;flex-direction:column;gap:8px;align-items:center}
+.ok .big{font-size:44px;line-height:1}
+.mine{display:flex;flex-direction:column;gap:6px}
+.mine div{display:flex;justify-content:space-between;gap:10px;background:var(--surface);border-radius:10px;padding:10px 12px;font-size:14px}
+.mine em{font-style:normal;font-weight:700;color:var(--accent);text-align:right}
+.gate{min-height:80vh;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:center;align-items:center}
+.gate a{color:var(--accent-fg);background:var(--accent);text-decoration:none;font-weight:700;border-radius:12px;padding:12px 18px}
+.spin{width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:s .8s linear infinite;margin:40vh auto 0}
+@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="spin" id="loading" aria-label="Se √ĂncarcƒÉ"></div>
+
+  <!-- Deschis √Ăn browser obi»ônuit: nu se aratƒÉ nimic personal -->
+  <div class="gate" id="gate" hidden>
+    <div class="brand">Panda Tur Moldova</div>
+    <h1>Deschide aplica»õia √Ăn Telegram</h1>
+    <p class="muted" id="gateText">AceastƒÉ paginƒÉ func»õioneazƒÉ doar din botul nostru din Telegram: a»ôa »ôtim cine trimite cererea.</p>
+    <a id="gateLink" href="#" hidden>Deschide botul</a>
+  </div>
+
+  <main id="app" hidden>
+    <div>
+      <div class="brand">Panda Tur Moldova ¬∑ franciza</div>
+      <h1 id="hello">BunƒÉ!</h1>
+      <p class="muted" style="margin-top:6px">Deschide o agen»õie de turism sub brandul Panda Tur. Alege pachetul »ôi lasƒÉ numƒÉrul: managerul de francize te sunƒÉ √Ăn aceea»ôi zi lucrƒÉtoare.</p>
+    </div>
+
+    <form id="form" novalidate>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <h2>1. Alege pachetul</h2>
+        <div class="pk" id="packages"></div>
+        <h2>2. Datele de contact</h2>
+        <div class="panel">
+          <label>Telefon *<input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+373 69 123 456" maxlength="40"></label>
+          <label>Ora»ôul unde vrei agen»õia<input id="city" maxlength="80" placeholder="Chi»ôinƒÉu"></label>
+          <label>√éntrebƒÉri sau comentariu<textarea id="comment" maxlength="1000"></textarea></label>
+          <div class="err" id="err" hidden></div>
+          <button class="main" type="submit" id="send">Trimite cererea</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="panel ok" id="done" hidden>
+      <div class="big">üêº</div>
+      <h1 id="doneTitle">Mul»õumim!</h1>
+      <p class="muted">Cererea a ajuns la echipa de francize. Statusul √Ăl vezi mai jos.</p>
+      <button class="main" type="button" id="again" style="margin-top:8px">AltƒÉ cerere</button>
+    </div>
+
+    <section id="mineBox" hidden>
+      <h2>Cererile mele</h2>
+      <div class="mine" id="mine" style="margin-top:8px"></div>
+    </section>
+  </main>
+</div>
+<script>
+const tg = window.Telegram?.WebApp;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const fmt = (iso) => new Date(iso).toLocaleString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const initData = tg?.initData || '';
+
+async function api(method, body) {
+  const r = await fetch('/api/tg-app', {
+    method,
+    headers: { 'Content-Type': 'application/json', 'X-Telegram-Init-Data': initData },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(d.error || 'Eroare de server'); e.status = r.status; e.data = d; throw e; }
+  return d;
+}
+
+function showGate(bot) {
+  $('loading').hidden = true; $('app').hidden = true; $('gate').hidden = false;
+  if (bot) { $('gateLink').href = 'https://t.me/' + encodeURIComponent(bot); $('gateLink').textContent = 'Deschide @' + bot; $('gateLink').hidden = false; }
+}
+
+function renderMine(list) {
+  $('mineBox').hidden = !list.length;
+  $('mine').innerHTML = list.map((l) => `<div><span>${esc(fmt(l.createdAt))}${l.package ? ' ¬∑ ' + esc(l.package) : ''}</span><em>${esc(l.status)}</em></div>`).join('');
+}
+
+async function start() {
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    // Pe telefon: ecran complet (Bot API 8.0+)
+    try { if (tg.isVersionAtLeast?.('8.0') && ['ios', 'android'].includes(tg.platform)) tg.requestFullscreen(); } catch {}
+  }
+  try {
+    const d = await api('GET');
+    $('hello').textContent = `BunƒÉ, ${d.user.firstName}!`;
+    $('packages').innerHTML = d.packages.map((p, i) => `
+      <label class="pkg"><input type="radio" name="pkg" value="${esc(p.id)}" ${i === 1 ? 'checked' : ''}>
+        <span><b>${esc(p.title)}</b><span class="price">${esc(p.price)}</span><p>${esc(p.text)}</p></span></label>`).join('');
+    renderMine(d.myLeads);
+    $('loading').hidden = true; $('app').hidden = false;
+  } catch (e) {
+    if (e.status === 401) return showGate(e.data?.bot);
+    $('loading').hidden = true; $('gate').hidden = false;
+    $('gate').querySelector('h1').textContent = 'Ceva n-a mers';
+    $('gateText').textContent = e.message;
+  }
+}
+
+$('form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const phone = $('phone').value.trim();
+  const pkg = document.querySelector('input[name=pkg]:checked')?.value || '';
+  const digits = (phone.match(/\d/g) || []).length;
+  if (digits < 8) { $('err').textContent = 'Scrie un numƒÉr de telefon valid.'; $('err').hidden = false; return; }
+  $('err').hidden = true; $('send').disabled = true;
+  try {
+    const r = await api('POST', { phone, package: pkg, city: $('city').value.trim(), comment: $('comment').value.trim() });
+    tg?.HapticFeedback?.notificationOccurred('success');
+    $('doneTitle').textContent = `Mul»õumim, ${r.name}!`;
+    $('form').hidden = true; $('done').hidden = false;
+    renderMine((await api('GET')).myLeads);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    if (e.status === 401) return showGate();
+    $('err').textContent = e.message; $('err').hidden = false;
+    tg?.HapticFeedback?.notificationOccurred('error');
+  } finally { $('send').disabled = false; }
+});
+$('again').addEventListener('click', () => { $('done').hidden = true; $('form').hidden = false; $('comment').value = ''; });
+
+start();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-/* Panda Tur · francize — verde bambus pe neutri ușor verzui; Unbounded pentru titluri, Manrope pentru text */
+/* Panda Tur ¬∑ francize ‚Äî verde bambus pe neutri u»ôor verzui; Unbounded pentru titluri, Manrope pentru text */
 :root{
   --bg:#f4f6f3; --surface:#ffffff; --surface-2:#eaeee8; --line:#d6ddd3;
   --fg:#18201b; --muted:#5d6a61; --accent:#1f7a4c; --accent-fg:#ffffff; --accent-soft:#dcefe3;
@@ -25,7 +25,8 @@ header{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content
 h1{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,3vw,28px);margin:2px 0 0;text-wrap:balance;line-height:1.2}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 button,select,input,textarea{font:inherit;color:inherit}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:6px}
+.btn.small{padding:4px 10px;font-size:12px}
 .btn:hover{border-color:var(--accent)}
 .btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 .btn.primary:hover{filter:brightness(1.07)}
@@ -49,7 +50,7 @@ button,select,input,textarea{font:inherit;color:inherit}
 .notice{background:var(--warm-soft);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
 
 .board-scroll{overflow-x:auto;padding-bottom:6px}
-.board{display:grid;grid-template-columns:repeat(5,minmax(240px,1fr));gap:12px;min-width:1260px}
+.board{display:grid;grid-template-columns:repeat(6,minmax(220px,1fr));gap:12px;min-width:1380px}
 .col{background:var(--surface-2);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;min-height:240px;min-width:0}
 .col.drop{outline:2px dashed var(--accent);outline-offset:-2px}
 .col h2{font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin:2px 4px 4px;display:flex;justify-content:space-between;color:var(--muted)}
@@ -102,7 +103,7 @@ label textarea{min-height:70px;resize:vertical}
 .err{color:var(--danger);font-size:13px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:8px;font-weight:600;font-size:13px;z-index:20}
 
-/* Pagini simple: login și formular candidat */
+/* Pagini simple: login »ôi formular candidat */
 .narrow{max-width:620px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px}
 .lead-in{color:var(--muted);margin:0;max-width:60ch}
@@ -122,7 +123,7 @@ fieldset{border:none;margin:0;padding:0;min-width:0}
 .fact b{display:block;font-family:var(--f-display);font-weight:500;font-size:15px}
 @media (prefers-reduced-motion:no-preference){.card,.choice{transition:border-color .15s,background .15s}}
 
-/* status, vizualizare listă, Telegram */
+/* status, vizualizare listƒÉ, Telegram */
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-left:auto}
 .seg button{border:none;background:var(--surface);padding:8px 14px;cursor:pointer;font-weight:600;color:var(--muted)}
 .seg button.on{background:var(--accent);color:var(--accent-fg)}
@@ -154,3 +155,29 @@ fieldset{border:none;margin:0;padding:0;min-width:0}
 .tg code{background:var(--surface-2);border-radius:6px;padding:1px 6px}
 .tg .okline{color:var(--accent);font-weight:700}
 .tg .badline{color:var(--danger);font-weight:700}
+
+/* –î–ó 2: etapa ‚ÄûAchitat‚Äù, surse, fi»ôa clientului, scanare */
+.stat.paid b{color:var(--accent)}
+.col[data-stage="achitat"]{background:var(--accent-soft)}
+.src{font-weight:700}
+.src-site{color:var(--cold)} .src-telegram{color:#2a8bd0} .src-vizitka{color:var(--warm)} .src-manual{color:var(--accent)}
+.card-info{background:var(--surface-2);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.info-row{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.hist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.hist li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding:3px 0}
+.hist li:last-child{border-bottom:none;font-weight:700}
+.hist time{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+#dlgScan{width:min(860px,calc(100vw - 32px))}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:28px 16px;align-items:center;text-align:center;cursor:pointer;color:var(--fg);margin-top:12px}
+.drop:hover{border-color:var(--accent)}
+.drop strong{font-size:15px}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.drop span{font-weight:400;color:var(--muted)}
+.scan-busy{display:flex;align-items:center;gap:10px;padding:24px 0;justify-content:center;font-weight:600}
+.spin{width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.review{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;margin:12px 0}
+@media (max-width:700px){.review{grid-template-columns:1fr}}
+.review-doc{background:var(--surface-2);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:200px}
+.review-doc img{max-width:100%;max-height:420px;display:block}
+.review-doc iframe{width:100%;height:420px;border:0}
