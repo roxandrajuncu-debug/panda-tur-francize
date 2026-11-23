@@ -291,8 +291,8 @@ function scanReset(keepFile){
 // Fotografiile mari se micșorează în browser (max 2000 px, JPEG), ca să încapă în limita Vercel de 4,5 MB.
 async function prepareFile(file){
   if(file.type==='application/pdf'){
-    if(file.size>3_200_000) throw new Error('PDF-ul e prea mare (maxim 3 MB).');
-    return {blob:file,type:'application/pdf'};
+    if(file.size>2_500_000) throw new Error('PDF-ul e prea mare (maxim 2,5 MB).');
+    return {blob:file,type:'application/pdf',preview:await pdfPreview(file)};
   }
   if(!file.type.startsWith('image/')&&!/\.(heic|heif)$/i.test(file.name)) throw new Error('Încarcă o fotografie sau un PDF.');
   const bmp=await createImageBitmap(file).catch(()=>null);
@@ -302,6 +302,18 @@ async function prepareFile(file){
   c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
   const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.86));
   return {blob,type:'image/jpeg'};
+}
+// Prima pagină a PDF-ului ca JPEG (pentru modelul gratuit de recunoaștere, care citește doar imagini).
+async function pdfPreview(file){
+  try{
+    if(!window.pdfjsLib){await new Promise((ok,bad)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=ok;s.onerror=bad;document.head.appendChild(s)});
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'}
+    const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise, page=await pdf.getPage(1);
+    const v=page.getViewport({scale:1}), k=Math.min(3,1600/Math.max(v.width,v.height)), vp=page.getViewport({scale:k});
+    const c=document.createElement('canvas'); c.width=Math.round(vp.width); c.height=Math.round(vp.height);
+    await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+    const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.85)); return await toBase64(blob);
+  }catch{return ''}
 }
 const toBase64=blob=>new Promise((ok,bad)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=bad;r.readAsDataURL(blob)});
 $('btnScan').addEventListener('click',()=>{scanReset(true);$('dlgScan').showModal()});
@@ -313,8 +325,8 @@ $('scanFile').addEventListener('change',async()=>{
   const file=$('scanFile').files[0]; if(!file) return;
   $('scanErr').hidden=true; $('scanBusy').hidden=false; $('scanDrop').hidden=true;
   try{
-    const {blob,type}=await prepareFile(file);
-    const res=await fetch('/api/ocr',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({mediaType:type,data:await toBase64(blob)})});
+    const {blob,type,preview}=await prepareFile(file);
+    const res=await fetch('/api/ocr',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({mediaType:type,data:await toBase64(blob),preview})});
     if(res.status===401){location.href='/login';return}
     const d=await res.json().catch(()=>({error:res.status===413?'Fișierul e prea mare.':'Eroare de server'}));
     if(!res.ok) throw new Error(d.error||'Eroare de server');
