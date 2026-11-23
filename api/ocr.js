@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     }
     if (!card.is_business_card) {
       return send(res, 422, {
-        error: 'Aceasta nu pare a fi o carte de vizită, așa că nu s-a salvat nimic.' + (card.reason ? ' Pe imagine: ' + card.reason : '') + ' Fotografiază cartea de vizită de aproape, pe o suprafață plană.',
+        error: 'Aceasta nu pare a fi o carte de vizită, așa că nu s-a salvat nimic.' + (card.reason ? ' Pe imagine: ' + card.reason.trim().replace(/[.!]?$/, '.') : '') + ' Fotografiază cartea de vizită de aproape, pe o suprafață plană.',
         notCard: true,
       });
     }
