@@ -1,52 +1,52 @@
-# CRM francize ¬∑ Panda Tur Moldova
+# CRM francize · Panda Tur Moldova
 
-Aplica»õie Node.js pentru Vercel: CRM cu p√¢lnie pentru cererile de francizƒÉ, OCR pentru cƒÉr»õi de vizitƒÉ (Claude), Telegram Mini App »ôi imagini AI.
+Aplicație Node.js pentru Vercel: CRM cu pâlnie pentru cererile de franciză, OCR pentru cărți de vizită (Claude), Telegram Mini App și imagini AI.
 
-**Live:** [formular](https://panda-tur-francize.vercel.app/aplica) ¬∑ [CRM](https://panda-tur-francize.vercel.app/admin) ¬∑ [Imagini AI](https://panda-tur-francize.vercel.app/imagini) ¬∑ Mini App: `/tg` (se deschide din bot)
+**Live:** [formular](https://panda-tur-francize.vercel.app/aplica) · [CRM](https://panda-tur-francize.vercel.app/admin) · [Imagini AI](https://panda-tur-francize.vercel.app/imagini) · Mini App: `/tg` (se deschide din bot)
 
-Codul se publicƒÉ automat pe Vercel la fiecare commit √Ăn `main`.
+Codul se publică automat pe Vercel la fiecare commit în `main`.
 
 ## Ce face
 
-- **CRM, p√¢lnia:** Nou ‚Üí Apel ‚Üí √ént√¢lnire ‚Üí Contract ‚Üí Achitat / Respins. Cardurile se trag √Ăntre coloane (sau se schimbƒÉ etapa √Ăn fi»ôƒÉ).
-  - Sursa: **Site** (formularul `/aplica`, automat), **Manual** (butonul ‚Äû+ Client manual‚Äù: apel, √Ănt√¢lnire), **Telegram** (Mini App), **Carte de vizitƒÉ** (scanare). Plus Facebook / Instagram prin `/aplica?src=‚Ä¶`.
-  - Fi»ôa clientului: nume, telefon, sursƒÉ, data creƒÉrii, noti»õe »ôi **istoria etapelor cu date** (coloana `history`).
-  - Statusul se trage din etapƒÉ: Nou ‚Üí nouƒÉ; Apel, √ént√¢lnire, Contract ‚Üí √Ăn lucru; Achitat, Respins ‚Üí √ĂnchisƒÉ.
-- **Scanare cƒÉr»õi de vizitƒÉ (Claude API):** ‚ÄûScaneazƒÉ vizitƒÉ‚Äù ‚Üí fotografie de pe telefon sau PDF ‚Üí Claude √Ăntoarce c√¢mpurile ‚Üí ecran de verificare ‚Üí clientul apare √Ăn ‚ÄûNou‚Äù cu sursa ‚ÄûCarte de vizitƒÉ‚Äù. Originalul stƒÉ √Ăn Supabase Storage (bucket privat `documents`) »ôi se deschide din fi»ôƒÉ. DacƒÉ imaginea nu e o carte de vizitƒÉ, apare un mesaj »ôi nu se salveazƒÉ nimic.
-- **Telegram Mini App (`/tg`):** butonul ‚ÄûFranciza‚Äù din meniul botului. Clientul vede pachetele (Start / Standard / Premium), lasƒÉ telefonul ‚Üí cererea intrƒÉ √Ăn CRM cu sursa ‚ÄûTelegram‚Äù »ôi numele din Telegram. Utilizatorul se verificƒÉ pe server (semnƒÉtura `initData` cu tokenul botului). √én browser obi»ônuit pagina cere sƒÉ fie deschisƒÉ √Ăn Telegram. Clientul √Ă»ôi vede »ôi statusul cererilor.
-- **Imagini AI (`/imagini`):** FLUX.1 [schnell] prin Cloudflare Workers AI, apelat de pe server. Istoria generƒÉrilor (bucket privat `generated` + tabelul `generations`), limitƒÉ 5 imagini pe zi (ora Chi»ôinƒÉului).
-- **Telegram:** la fiecare cerere nouƒÉ (site sau Mini App), botul trimite imediat datele √Ăn chat-ul echipei.
+- **CRM, pâlnia:** Nou → Apel → Întâlnire → Contract → Achitat / Respins. Cardurile se trag între coloane (sau se schimbă etapa în fișă).
+  - Sursa: **Site** (formularul `/aplica`, automat), **Manual** (butonul „+ Client manual”: apel, întâlnire), **Telegram** (Mini App), **Carte de vizită** (scanare). Plus Facebook / Instagram prin `/aplica?src=…`.
+  - Fișa clientului: nume, telefon, sursă, data creării, notițe și **istoria etapelor cu date** (coloana `history`).
+  - Statusul se trage din etapă: Nou → nouă; Apel, Întâlnire, Contract → în lucru; Achitat, Respins → închisă.
+- **Scanare cărți de vizită (Claude API):** „Scanează vizită” → fotografie de pe telefon sau PDF → Claude întoarce câmpurile → ecran de verificare → clientul apare în „Nou” cu sursa „Carte de vizită”. Originalul stă în Supabase Storage (bucket privat `documents`) și se deschide din fișă. Dacă imaginea nu e o carte de vizită, apare un mesaj și nu se salvează nimic.
+- **Telegram Mini App (`/tg`):** butonul „Franciza” din meniul botului. Clientul vede pachetele (Start / Standard / Premium), lasă telefonul → cererea intră în CRM cu sursa „Telegram” și numele din Telegram. Utilizatorul se verifică pe server (semnătura `initData` cu tokenul botului). În browser obișnuit pagina cere să fie deschisă în Telegram. Clientul își vede și statusul cererilor.
+- **Imagini AI (`/imagini`):** FLUX.1 [schnell] prin Cloudflare Workers AI, apelat de pe server. Istoria generărilor (bucket privat `generated` + tabelul `generations`), limită 5 imagini pe zi (ora Chișinăului).
+- **Telegram:** la fiecare cerere nouă (site sau Mini App), botul trimite imediat datele în chat-ul echipei.
 
-## Variabile √Ăn Vercel (nimic secret √Ăn cod)
+## Variabile în Vercel (nimic secret în cod)
 
-| VariabilƒÉ | De unde |
+| Variabilă | De unde |
 |---|---|
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | se adaugƒÉ singure la Storage ‚Üí Supabase ‚Üí Connect |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | se adaugă singure la Storage → Supabase → Connect |
 | `TELEGRAM_BOT_TOKEN` | de la @BotFather |
-| `TELEGRAM_CHAT_ID` | apare √Ăn panou, la ‚ÄûNotificƒÉri Telegram‚Äù, dupƒÉ ce √Ăi scrii botului |
-| `ADMIN_PASSWORD`, `SESSION_SECRET` | parola echipei »ôi un »ôir aleatoriu lung |
-| `ANTHROPIC_API_KEY` | console.anthropic.com ‚Üí API Keys (cu limitƒÉ de cheltuieli √Ăn Settings ‚Üí Limits) |
-| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | dash.cloudflare.com ‚Üí Workers AI ‚Üí Use REST API (token cu permisiunea ‚ÄûWorkers AI‚Äù) |
-| `GEN_DAILY_LIMIT` | op»õional, implicit 5 |
+| `TELEGRAM_CHAT_ID` | apare în panou, la „Notificări Telegram”, după ce îi scrii botului |
+| `ADMIN_PASSWORD`, `SESSION_SECRET` | parola echipei și un șir aleatoriu lung |
+| `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys (cu limită de cheltuieli în Settings → Limits) |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` | dash.cloudflare.com → Workers AI → Use REST API (token cu permisiunea „Workers AI”) |
+| `GEN_DAILY_LIMIT` | opțional, implicit 5 |
 
-Tabelele se creeazƒÉ o singurƒÉ datƒÉ √Ăn Supabase ‚Üí SQL Editor: √Ănt√¢i [supabase/schema.sql](supabase/schema.sql), apoi [supabase/migrare-dz2.sql](supabase/migrare-dz2.sql) (etapa Achitat, istoria, Storage, generƒÉri).
+Tabelele se creează o singură dată în Supabase → SQL Editor: întâi [supabase/schema.sql](supabase/schema.sql), apoi [supabase/migrare-dz2.sql](supabase/migrare-dz2.sql) (etapa Achitat, istoria, Storage, generări).
 
-## Cum se calculeazƒÉ scorul (0‚Äì100)
+## Cum se calculează scorul (0–100)
 
-| Criteriu | VariantƒÉ | Puncte |
+| Criteriu | Variantă | Puncte |
 |---|---|---|
-| Buget | Sub 10.000 ‚Ç¨ | 0 (marcat ‚ÄûSub prag‚Äù) |
-| | 10.000 ‚Äì 25.000 ‚Ç¨ | 30 |
-| | Peste 25.000 ‚Ç¨ | 40 |
-| Ora»ô | Prioritate mare (implicit Chi»ôinƒÉu, BƒÉl»õi) | 25 |
+| Buget | Sub 10.000 € | 0 (marcat „Sub prag”) |
+| | 10.000 – 25.000 € | 30 |
+| | Peste 25.000 € | 40 |
+| Oraș | Prioritate mare (implicit Chișinău, Bălți) | 25 |
 | | Prioritate medie (centre raionale) | 15 |
-| | Alte localitƒÉ»õi / diaspora | 5 |
-| Spa»õiu | Are spa»õiu / cautƒÉ / nu are | 20 / 10 / 0 |
-| Termen | ‚â§1 lunƒÉ / 1‚Äì3 luni / 3‚Äì6 luni / >6 luni | 15 / 10 / 5 / 0 |
+| | Alte localități / diaspora | 5 |
+| Spațiu | Are spațiu / caută / nu are | 20 / 10 / 0 |
+| Termen | ≤1 lună / 1–3 luni / 3–6 luni / >6 luni | 15 / 10 / 5 / 0 |
 
-**Fierbinte** 70+ ¬∑ **Cald** 45‚Äì69 ¬∑ **Rece** sub 45. Listele de ora»ôe se schimbƒÉ din butonul ‚ÄûPrioritƒÉ»õi ora»ôe‚Äù.
+**Fierbinte** 70+ · **Cald** 45–69 · **Rece** sub 45. Listele de orașe se schimbă din butonul „Priorități orașe”.
 
-## StructurƒÉ
+## Structură
 
 ```
 api/      leads (CRM), apply (formular public), ocr (Claude), doc (original), tg-app (Mini App),
