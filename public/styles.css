@@ -1,4 +1,4 @@
-/* Panda Tur ¬∑ francize ‚Äî verde bambus pe neutri u»ôor verzui; Unbounded pentru titluri, Manrope pentru text */
+/* Panda Tur · francize — verde bambus pe neutri ușor verzui; Unbounded pentru titluri, Manrope pentru text */
 :root{
   --bg:#f4f6f3; --surface:#ffffff; --surface-2:#eaeee8; --line:#d6ddd3;
   --fg:#18201b; --muted:#5d6a61; --accent:#1f7a4c; --accent-fg:#ffffff; --accent-soft:#dcefe3;
@@ -103,7 +103,7 @@ label textarea{min-height:70px;resize:vertical}
 .err{color:var(--danger);font-size:13px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:8px;font-weight:600;font-size:13px;z-index:20}
 
-/* Pagini simple: login »ôi formular candidat */
+/* Pagini simple: login și formular candidat */
 .narrow{max-width:620px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px}
 .lead-in{color:var(--muted);margin:0;max-width:60ch}
@@ -123,7 +123,7 @@ fieldset{border:none;margin:0;padding:0;min-width:0}
 .fact b{display:block;font-family:var(--f-display);font-weight:500;font-size:15px}
 @media (prefers-reduced-motion:no-preference){.card,.choice{transition:border-color .15s,background .15s}}
 
-/* status, vizualizare listƒÉ, Telegram */
+/* status, vizualizare listă, Telegram */
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-left:auto}
 .seg button{border:none;background:var(--surface);padding:8px 14px;cursor:pointer;font-weight:600;color:var(--muted)}
 .seg button.on{background:var(--accent);color:var(--accent-fg)}
@@ -156,7 +156,7 @@ fieldset{border:none;margin:0;padding:0;min-width:0}
 .tg .okline{color:var(--accent);font-weight:700}
 .tg .badline{color:var(--danger);font-weight:700}
 
-/* –î–ó 2: etapa ‚ÄûAchitat‚Äù, surse, fi»ôa clientului, scanare */
+/* ДЗ 2: etapa „Achitat”, surse, fișa clientului, scanare */
 .stat.paid b{color:var(--accent)}
 .col[data-stage="achitat"]{background:var(--accent-soft)}
 .src{font-weight:700}

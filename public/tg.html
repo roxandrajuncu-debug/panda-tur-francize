@@ -55,21 +55,21 @@ button.main:disabled{opacity:.55}
 </head>
 <body>
 <div class="wrap">
-  <div class="spin" id="loading" aria-label="Se √ĂncarcƒÉ"></div>
+  <div class="spin" id="loading" aria-label="Se încarcă"></div>
 
-  <!-- Deschis √Ăn browser obi»ônuit: nu se aratƒÉ nimic personal -->
+  <!-- Deschis în browser obișnuit: nu se arată nimic personal -->
   <div class="gate" id="gate" hidden>
     <div class="brand">Panda Tur Moldova</div>
-    <h1>Deschide aplica»õia √Ăn Telegram</h1>
-    <p class="muted" id="gateText">AceastƒÉ paginƒÉ func»õioneazƒÉ doar din botul nostru din Telegram: a»ôa »ôtim cine trimite cererea.</p>
+    <h1>Deschide aplicația în Telegram</h1>
+    <p class="muted" id="gateText">Această pagină funcționează doar din botul nostru din Telegram: așa știm cine trimite cererea.</p>
     <a id="gateLink" href="#" hidden>Deschide botul</a>
   </div>
 
   <main id="app" hidden>
     <div>
-      <div class="brand">Panda Tur Moldova ¬∑ franciza</div>
-      <h1 id="hello">BunƒÉ!</h1>
-      <p class="muted" style="margin-top:6px">Deschide o agen»õie de turism sub brandul Panda Tur. Alege pachetul »ôi lasƒÉ numƒÉrul: managerul de francize te sunƒÉ √Ăn aceea»ôi zi lucrƒÉtoare.</p>
+      <div class="brand">Panda Tur Moldova · franciza</div>
+      <h1 id="hello">Bună!</h1>
+      <p class="muted" style="margin-top:6px">Deschide o agenție de turism sub brandul Panda Tur. Alege pachetul și lasă numărul: managerul de francize te sună în aceeași zi lucrătoare.</p>
     </div>
 
     <form id="form" novalidate>
@@ -79,8 +79,8 @@ button.main:disabled{opacity:.55}
         <h2>2. Datele de contact</h2>
         <div class="panel">
           <label>Telefon *<input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+373 69 123 456" maxlength="40"></label>
-          <label>Ora»ôul unde vrei agen»õia<input id="city" maxlength="80" placeholder="Chi»ôinƒÉu"></label>
-          <label>√éntrebƒÉri sau comentariu<textarea id="comment" maxlength="1000"></textarea></label>
+          <label>Orașul unde vrei agenția<input id="city" maxlength="80" placeholder="Chișinău"></label>
+          <label>Întrebări sau comentariu<textarea id="comment" maxlength="1000"></textarea></label>
           <div class="err" id="err" hidden></div>
           <button class="main" type="submit" id="send">Trimite cererea</button>
         </div>
@@ -88,10 +88,10 @@ button.main:disabled{opacity:.55}
     </form>
 
     <div class="panel ok" id="done" hidden>
-      <div class="big">üêº</div>
-      <h1 id="doneTitle">Mul»õumim!</h1>
-      <p class="muted">Cererea a ajuns la echipa de francize. Statusul √Ăl vezi mai jos.</p>
-      <button class="main" type="button" id="again" style="margin-top:8px">AltƒÉ cerere</button>
+      <div class="big">🐼</div>
+      <h1 id="doneTitle">Mulțumim!</h1>
+      <p class="muted">Cererea a ajuns la echipa de francize. Statusul îl vezi mai jos.</p>
+      <button class="main" type="button" id="again" style="margin-top:8px">Altă cerere</button>
     </div>
 
     <section id="mineBox" hidden>
@@ -125,7 +125,7 @@ function showGate(bot) {
 
 function renderMine(list) {
   $('mineBox').hidden = !list.length;
-  $('mine').innerHTML = list.map((l) => `<div><span>${esc(fmt(l.createdAt))}${l.package ? ' ¬∑ ' + esc(l.package) : ''}</span><em>${esc(l.status)}</em></div>`).join('');
+  $('mine').innerHTML = list.map((l) => `<div><span>${esc(fmt(l.createdAt))}${l.package ? ' · ' + esc(l.package) : ''}</span><em>${esc(l.status)}</em></div>`).join('');
 }
 
 async function start() {
@@ -137,7 +137,7 @@ async function start() {
   }
   try {
     const d = await api('GET');
-    $('hello').textContent = `BunƒÉ, ${d.user.firstName}!`;
+    $('hello').textContent = `Bună, ${d.user.firstName}!`;
     $('packages').innerHTML = d.packages.map((p, i) => `
       <label class="pkg"><input type="radio" name="pkg" value="${esc(p.id)}" ${i === 1 ? 'checked' : ''}>
         <span><b>${esc(p.title)}</b><span class="price">${esc(p.price)}</span><p>${esc(p.text)}</p></span></label>`).join('');
@@ -156,12 +156,12 @@ $('form').addEventListener('submit', async (ev) => {
   const phone = $('phone').value.trim();
   const pkg = document.querySelector('input[name=pkg]:checked')?.value || '';
   const digits = (phone.match(/\d/g) || []).length;
-  if (digits < 8) { $('err').textContent = 'Scrie un numƒÉr de telefon valid.'; $('err').hidden = false; return; }
+  if (digits < 8) { $('err').textContent = 'Scrie un număr de telefon valid.'; $('err').hidden = false; return; }
   $('err').hidden = true; $('send').disabled = true;
   try {
     const r = await api('POST', { phone, package: pkg, city: $('city').value.trim(), comment: $('comment').value.trim() });
     tg?.HapticFeedback?.notificationOccurred('success');
-    $('doneTitle').textContent = `Mul»õumim, ${r.name}!`;
+    $('doneTitle').textContent = `Mulțumim, ${r.name}!`;
     $('form').hidden = true; $('done').hidden = false;
     renderMine((await api('GET')).myLeads);
     window.scrollTo({ top: 0, behavior: 'smooth' });
